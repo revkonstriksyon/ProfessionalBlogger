@@ -1,65 +1,53 @@
-import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
-import type { Language } from '@shared/schema';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 interface LanguageSwitcherProps {
   variant?: 'header' | 'footer';
 }
 
-const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'header' }) => {
-  const { language, changeLanguage } = useLanguage();
-  const { t } = useTranslation();
+export default function LanguageSwitcher({ variant = 'header' }: LanguageSwitcherProps) {
+  const { i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
-  const isHeader = variant === 'header';
-  const isFooter = variant === 'footer';
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng).then(() => {
+      document.documentElement.lang = lng;
+      localStorage.setItem('i18nextLng', lng);
+      setCurrentLang(lng);
+    });
+  };
+
+  const buttonClass = variant === 'footer' 
+    ? 'text-sm text-white hover:text-gray-200' 
+    : 'text-sm';
 
   return (
-    <div className={`flex ${isHeader ? 'space-x-1 border rounded-full px-3 py-1' : 'space-x-1'}`}>
-      <button
-        className={`text-sm font-semibold ${
-          language === 'ht'
-            ? isHeader
-              ? 'text-white bg-primary px-3 py-1 rounded-full'
-              : 'text-white bg-primary px-3 py-1 rounded-full'
-            : isHeader
-            ? 'text-gray-600 px-3 py-1 rounded-full hover:bg-gray-100'
-            : 'text-gray-300 border border-gray-600 px-3 py-1 rounded-full hover:bg-white hover:text-primary transition'
-        }`}
+    <div className="flex space-x-2">
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className={`${buttonClass} ${currentLang === 'ht' ? 'font-bold' : ''}`}
         onClick={() => changeLanguage('ht')}
       >
         Kreyòl
-      </button>
-      <button
-        className={`text-sm font-semibold ${
-          language === 'fr'
-            ? isHeader
-              ? 'text-white bg-primary px-3 py-1 rounded-full'
-              : 'text-white bg-primary px-3 py-1 rounded-full'
-            : isHeader
-            ? 'text-gray-600 px-3 py-1 rounded-full hover:bg-gray-100'
-            : 'text-gray-300 border border-gray-600 px-3 py-1 rounded-full hover:bg-white hover:text-primary transition'
-        }`}
+      </Button>
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className={`${buttonClass} ${currentLang === 'fr' ? 'font-bold' : ''}`}
         onClick={() => changeLanguage('fr')}
       >
         Français
-      </button>
-      <button
-        className={`text-sm font-semibold ${
-          language === 'en'
-            ? isHeader
-              ? 'text-white bg-primary px-3 py-1 rounded-full'
-              : 'text-white bg-primary px-3 py-1 rounded-full'
-            : isHeader
-            ? 'text-gray-600 px-3 py-1 rounded-full hover:bg-gray-100'
-            : 'text-gray-300 border border-gray-600 px-3 py-1 rounded-full hover:bg-white hover:text-primary transition'
-        }`}
+      </Button>
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className={`${buttonClass} ${currentLang === 'en' ? 'font-bold' : ''}`}
         onClick={() => changeLanguage('en')}
       >
         English
-      </button>
+      </Button>
     </div>
   );
-};
-
-export default LanguageSwitcher;
+}
