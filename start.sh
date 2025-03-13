@@ -1,8 +1,8 @@
 
 #!/bin/bash
 
-# Make the script executable
-chmod +x start.sh
+# Make sure we're in the project root
+cd "$(dirname "$0")"
 
 # Install dependencies if needed
 if [ ! -d "node_modules" ]; then
@@ -13,6 +13,6 @@ fi
 # Set PORT environment variable for Replit compatibility
 export PORT=5000
 
-# Start the application with improved error handling
+# Start the application
 echo "Starting the application..."
-npm run dev || echo "Failed to start the application. Check logs for errors."
+npm run dev
