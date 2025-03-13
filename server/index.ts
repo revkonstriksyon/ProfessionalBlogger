@@ -67,7 +67,7 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
     log(`Replit URL: ${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
     log(`Full application URL: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
-    log(`Local URL: http://localhost:${port}`);
+    log(`Local URL: http://0.0.0.0:${port}`);
     log(`Application started successfully - please check Webview tab or open in browser`);
   });
 })();
