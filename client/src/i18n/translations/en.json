@@ -1,0 +1,111 @@
+{
+  "site": {
+    "name": "Ayiti Blog",
+    "tagline": "News, Culture, and more"
+  },
+  "header": {
+    "home": "Home",
+    "news": "News",
+    "politics": "Politics",
+    "culture": "Culture",
+    "sports": "Sports",
+    "education": "Education",
+    "health": "Health",
+    "technology": "Technology",
+    "media": "Media",
+    "login": "Login",
+    "register": "Register",
+    "search": "Search",
+    "searchPlaceholder": "Search for articles, news, or topics..."
+  },
+  "hero": {
+    "welcome": "Welcome to Ayiti Blog",
+    "subtitle": "Premier source of information on Haiti - news, culture, history and more",
+    "latestNews": "Latest News",
+    "subscribe": "Subscribe"
+  },
+  "breaking": {
+    "title": "BREAKING"
+  },
+  "featured": {
+    "title": "Featured Articles",
+    "viewAll": "View all"
+  },
+  "latest": {
+    "title": "Latest News",
+    "all": "All",
+    "politics": "Politics",
+    "economy": "Economy",
+    "loadMore": "Load More Articles"
+  },
+  "media": {
+    "title": "Media",
+    "photo": "Photos",
+    "video": "Videos",
+    "podcast": "Podcasts",
+    "viewAll": "View All Media"
+  },
+  "blog": {
+    "title": "Blog and Analysis",
+    "allAnalysis": "All analysis",
+    "readMore": "Read more",
+    "views": "views",
+    "comments": "comments",
+    "likes": "likes"
+  },
+  "sidebar": {
+    "popular": "Popular Articles",
+    "newsletter": "Subscribe to Our Newsletter",
+    "newsletterInfo": "Receive the latest news and articles directly in your email. We never share your information.",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Your email",
+    "languageSelect": "Choose your preferred language",
+    "subscribe": "Subscribe",
+    "poll": "Poll",
+    "vote": "Vote",
+    "voteAgain": "Vote Again",
+    "peopleVoted": "people voted",
+    "tags": "Popular Tags",
+    "followUs": "Follow Us"
+  },
+  "footer": {
+    "categories": "Categories",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "advertisements": "Advertisements",
+    "workWithUs": "Work With Us",
+    "contact": "Contact Us",
+    "address": "Port-au-Prince, Haiti",
+    "allRightsReserved": "All rights reserved",
+    "terms": "Terms of Use",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "article": {
+    "comments": "Comments",
+    "related": "Related Articles",
+    "share": "Share",
+    "author": "Author",
+    "published": "Published",
+    "category": "Category",
+    "readTime": "Read Time"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you",
+    "name": "Your name",
+    "email": "Your email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "thankYou": "Thank you for your message. We'll contact you soon!",
+    "error": "There was an error sending your message. Please try again."
+  },
+  "common": {
+    "daysAgo": "days ago",
+    "weeksAgo": "weeks ago"
+  }
+}

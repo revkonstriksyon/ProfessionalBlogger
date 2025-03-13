@@ -1,0 +1,111 @@
+{
+  "site": {
+    "name": "Ayiti Blog",
+    "tagline": "Nouvèl, Kilti, ak plis ankò"
+  },
+  "header": {
+    "home": "Akèy",
+    "news": "Aktualite",
+    "politics": "Politik",
+    "culture": "Kilti",
+    "sports": "Espò",
+    "education": "Edikasyon",
+    "health": "Sante",
+    "technology": "Teknoloji",
+    "media": "Medya",
+    "login": "Konekte",
+    "register": "Enskri",
+    "search": "Chèche",
+    "searchPlaceholder": "Chèche atik, nouvèl, oswa sijè..."
+  },
+  "hero": {
+    "welcome": "Byenveni nan Ayiti Blog",
+    "subtitle": "Premye sous enfòmasyon sou Ayiti - nouvèl, kilti, istwa ak plis ankò",
+    "latestNews": "Dènye Nouvèl",
+    "subscribe": "Abòne Ou"
+  },
+  "breaking": {
+    "title": "DIRÈK"
+  },
+  "featured": {
+    "title": "Atik ki Enpòtan",
+    "viewAll": "Wè tout"
+  },
+  "latest": {
+    "title": "Dènye Nouvèl",
+    "all": "Tout",
+    "politics": "Politik",
+    "economy": "Ekonomi",
+    "loadMore": "Chaje Plis Atik"
+  },
+  "media": {
+    "title": "Medya",
+    "photo": "Foto",
+    "video": "Videyo",
+    "podcast": "Podcast",
+    "viewAll": "Wè Tout Medya"
+  },
+  "blog": {
+    "title": "Blog ak Analiz",
+    "allAnalysis": "Tout analiz",
+    "readMore": "Li plis",
+    "views": "views",
+    "comments": "kòmantè",
+    "likes": "renmen"
+  },
+  "sidebar": {
+    "popular": "Atik Popilè",
+    "newsletter": "Abòne nan Bilten Nou",
+    "newsletterInfo": "Resevwa dènye nouvèl ak atik yo dirèkteman nan imèl ou. Nou pa janm pataje enfòmasyon w.",
+    "namePlaceholder": "Non ou",
+    "emailPlaceholder": "Imèl ou",
+    "languageSelect": "Chwazi lang ou prefere",
+    "subscribe": "Abòne",
+    "poll": "Sondaj",
+    "vote": "Vote",
+    "voteAgain": "Vote Ankò",
+    "peopleVoted": "moun vote",
+    "tags": "Tag Popilè",
+    "followUs": "Swiv Nou"
+  },
+  "footer": {
+    "categories": "Kategori",
+    "quickLinks": "Lyen Rapid",
+    "aboutUs": "Sou Nou",
+    "contactUs": "Kontakte Nou",
+    "termsOfUse": "Kondisyon Itilizasyon",
+    "privacyPolicy": "Règleman sou Vi Prive",
+    "advertisements": "Anons",
+    "workWithUs": "Travay ak Nou",
+    "contact": "Kontakte Nou",
+    "address": "Port-au-Prince, Haiti",
+    "allRightsReserved": "Tout dwa rezève",
+    "terms": "Kondisyon Itilizasyon",
+    "privacy": "Vi Prive",
+    "cookies": "Kuki"
+  },
+  "article": {
+    "comments": "Kòmantè",
+    "related": "Atik ki gen rapò",
+    "share": "Pataje",
+    "author": "Otè",
+    "published": "Pibliye",
+    "category": "Kategori",
+    "readTime": "Tan Lekti"
+  },
+  "contact": {
+    "title": "Kontakte Nou",
+    "subtitle": "Nou ta renmen tande ou",
+    "name": "Non ou",
+    "email": "Imèl ou",
+    "subject": "Sijè",
+    "message": "Mesaj",
+    "send": "Voye Mesaj",
+    "thankYou": "Mèsi pou mesaj ou. Nou pral kontakte ou byento!",
+    "error": "Te gen yon erè nan voye mesaj ou. Tanpri eseye ankò."
+  },
+  "common": {
+    "daysAgo": "jou pase",
+    "weeksAgo": "semèn pase"
+  }
+}

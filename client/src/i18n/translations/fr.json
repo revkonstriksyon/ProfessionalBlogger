@@ -1,0 +1,111 @@
+{
+  "site": {
+    "name": "Ayiti Blog",
+    "tagline": "Nouvelles, Culture, et plus encore"
+  },
+  "header": {
+    "home": "Accueil",
+    "news": "Actualités",
+    "politics": "Politique",
+    "culture": "Culture",
+    "sports": "Sports",
+    "education": "Éducation",
+    "health": "Santé",
+    "technology": "Technologie",
+    "media": "Média",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher des articles, nouvelles ou sujets..."
+  },
+  "hero": {
+    "welcome": "Bienvenue sur Ayiti Blog",
+    "subtitle": "Première source d'information sur Haïti - nouvelles, culture, histoire et plus encore",
+    "latestNews": "Dernières Nouvelles",
+    "subscribe": "S'abonner"
+  },
+  "breaking": {
+    "title": "DIRECT"
+  },
+  "featured": {
+    "title": "Articles Importants",
+    "viewAll": "Voir tout"
+  },
+  "latest": {
+    "title": "Dernières Nouvelles",
+    "all": "Tout",
+    "politics": "Politique",
+    "economy": "Économie",
+    "loadMore": "Charger Plus d'Articles"
+  },
+  "media": {
+    "title": "Média",
+    "photo": "Photos",
+    "video": "Vidéos",
+    "podcast": "Podcasts",
+    "viewAll": "Voir Tous les Médias"
+  },
+  "blog": {
+    "title": "Blog et Analyses",
+    "allAnalysis": "Toutes les analyses",
+    "readMore": "Lire plus",
+    "views": "vues",
+    "comments": "commentaires",
+    "likes": "j'aime"
+  },
+  "sidebar": {
+    "popular": "Articles Populaires",
+    "newsletter": "Abonnez-vous à Notre Newsletter",
+    "newsletterInfo": "Recevez les dernières nouvelles et articles directement dans votre email. Nous ne partageons jamais vos informations.",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "Votre email",
+    "languageSelect": "Choisissez votre langue préférée",
+    "subscribe": "S'abonner",
+    "poll": "Sondage",
+    "vote": "Voter",
+    "voteAgain": "Voter à Nouveau",
+    "peopleVoted": "personnes ont voté",
+    "tags": "Tags Populaires",
+    "followUs": "Suivez-nous"
+  },
+  "footer": {
+    "categories": "Catégories",
+    "quickLinks": "Liens Rapides",
+    "aboutUs": "À Propos",
+    "contactUs": "Contactez-nous",
+    "termsOfUse": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
+    "advertisements": "Annonces",
+    "workWithUs": "Travaillez avec Nous",
+    "contact": "Contactez-nous",
+    "address": "Port-au-Prince, Haïti",
+    "allRightsReserved": "Tous droits réservés",
+    "terms": "Conditions d'Utilisation",
+    "privacy": "Confidentialité",
+    "cookies": "Cookies"
+  },
+  "article": {
+    "comments": "Commentaires",
+    "related": "Articles Liés",
+    "share": "Partager",
+    "author": "Auteur",
+    "published": "Publié",
+    "category": "Catégorie",
+    "readTime": "Temps de Lecture"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous aimerions vous entendre",
+    "name": "Votre nom",
+    "email": "Votre email",
+    "subject": "Sujet",
+    "message": "Message",
+    "send": "Envoyer Message",
+    "thankYou": "Merci pour votre message. Nous vous contacterons bientôt!",
+    "error": "Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer."
+  },
+  "common": {
+    "daysAgo": "jours passés",
+    "weeksAgo": "semaines passées"
+  }
+}
