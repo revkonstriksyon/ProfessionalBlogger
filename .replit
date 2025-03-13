@@ -47,8 +47,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "chmod +x start.sh"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "./start.sh"
+args = "npm run dev"
