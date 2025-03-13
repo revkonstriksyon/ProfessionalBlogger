@@ -1,0 +1,137 @@
+{
+  "common": {
+    "loading": "Chajman...",
+    "sending": "Voye...",
+    "readMore": "Li Plis",
+    "backToHome": "Retounen nan paj akèy",
+    "viewAll": "Wè tout"
+  },
+  "nav": {
+    "home": "Akèy",
+    "about": "Kilès Nou Ye",
+    "blog": "Blog",
+    "contact": "Kontakte Nou",
+    "more": "Plis",
+    "search": "Chèche"
+  },
+  "language": {
+    "label": "Lang",
+    "ht": "Kreyòl",
+    "fr": "Français",
+    "en": "English"
+  },
+  "validation": {
+    "nameRequired": "Tanpri antre non ou",
+    "emailRequired": "Tanpri antre imèl ou",
+    "emailInvalid": "Tanpri antre yon imèl ki valid",
+    "subjectRequired": "Tanpri antre yon sijè",
+    "messageRequired": "Tanpri antre yon mesaj ki genyen omwen 10 karaktè"
+  },
+  "latestNews": {
+    "title": "Dènye Nouvèl",
+    "viewAll": "Tout Nouvèl"
+  },
+  "categories": {
+    "title": "Kategori yo",
+    "articles": "atik"
+  },
+  "blog": {
+    "title": "Blog ak Analiz",
+    "viewAll": "Tout Analiz",
+    "readTime": "lekti"
+  },
+  "media": {
+    "title": "Medya",
+    "photos": "Foto",
+    "videos": "Videyo",
+    "podcasts": "Podcast",
+    "noPhotos": "Pa gen foto pou montre pou kounye a",
+    "noVideos": "Pa gen videyo pou montre pou kounye a",
+    "noPodcasts": "Pa gen podcast pou montre pou kounye a",
+    "views": "views",
+    "with": "Avèk"
+  },
+  "poll": {
+    "title": "Sondaj ak Opinyon",
+    "noPollsAvailable": "Pa gen sondaj ki disponib pou kounye a",
+    "vote": "Vote",
+    "voteAgain": "Vote Ankò",
+    "results": "Rezilta",
+    "votes": "vòt",
+    "voteSuccess": "Vòt ou anrejistre!",
+    "voteSuccessDesc": "Mèsi paske w patisipe nan sondaj nou an.",
+    "voteError": "Erè pandan vòt la",
+    "voteErrorDesc": "Tanpri eseye ankò pita."
+  },
+  "newsletter": {
+    "title": "Enskri pou Bilten",
+    "description": "Enskri pou resevwa dènye nouvèl yo nan imèl ou.",
+    "subscribe": "Abòne",
+    "stayInformed": "Rete enfòme!",
+    "receiveLatest": "Resevwa dènye nouvèl ak atik sou Ayiti nan imèl ou.",
+    "name": "Non",
+    "namePlaceholder": "Antre non ou",
+    "email": "Imèl",
+    "emailPlaceholder": "Antre imèl ou",
+    "preferredLanguage": "Lang Prefere",
+    "success": "Abònman reyisi!",
+    "successDesc": "Mèsi pou abònman ou. Ou pral resevwa dènye nouvèl nou yo.",
+    "error": "Erè pandan abònman",
+    "errorDesc": "Tanpri eseye ankò pita oswa itilize yon lòt imèl."
+  },
+  "contact": {
+    "title": "Kontakte Nou",
+    "info": "Enfòmasyon Kontak",
+    "address": "Adrès",
+    "phone": "Telefòn",
+    "email": "Imèl",
+    "followUs": "Swiv Nou",
+    "sendMessage": "Voye nou yon mesaj",
+    "nameLabel": "Non",
+    "namePlaceholder": "Antre non ou",
+    "emailLabel": "Imèl",
+    "emailPlaceholder": "Antre imèl ou",
+    "subjectLabel": "Sijè",
+    "subjectPlaceholder": "Antre sijè mesaj la",
+    "messageLabel": "Mesaj",
+    "messagePlaceholder": "Ekri mesaj ou a",
+    "send": "Voye Mesaj",
+    "success": "Mesaj voye!",
+    "successDesc": "Mèsi pou mesaj ou. Nou pral kontakte w byento.",
+    "error": "Erè pandan anvwa mesaj la",
+    "errorDesc": "Tanpri eseye ankò pita."
+  },
+  "footer": {
+    "description": "Yon platfòm ki bay enfòmasyon ki kredib sou Ayiti, ki prezante divès pwendvi epi ki ankouraje konvèsasyon pou yon pi bon demen.",
+    "categories": "Kategori yo",
+    "quickLinks": "Lyen Rapid",
+    "privacy": "Règleman Vi Prive",
+    "terms": "Kondisyon Itilizasyon",
+    "rights": "Tout dwa rezève."
+  },
+  "search": {
+    "title": "Chèche",
+    "placeholder": "Antre sa ou vle chèche...",
+    "button": "Chèche",
+    "noResults": "Pa gen rezilta pou chèche sa a",
+    "tryAgain": "Tanpri eseye avèk lòt mo kle."
+  },
+  "article": {
+    "by": "Pa",
+    "minRead": "minit lekti",
+    "authorBio": "Jounalis eksperyanse ki kouvri aktyalite ayisyen depi plis pase 10 ane. Espesyalize nan analiz ekonomik ak politik Ayiti.",
+    "relatedArticles": "Atik ki gen rapò",
+    "loading": "Chajman atik...",
+    "notFound": "Atik Pa Jwenn",
+    "notFoundDesc": "Nou regrèt, atik ou chèche a pa disponib oswa li te siprime."
+  },
+  "category": {
+    "loading": "Chajman kategori...",
+    "notFound": "Kategori Pa Jwenn",
+    "notFoundDesc": "Nou regrèt, kategori ou chèche a pa egziste.",
+    "description": "Tout atik ki gen rapò ak {{category}}",
+    "noArticles": "Pa gen atik nan kategori sa a",
+    "noArticlesDesc": "Tanpri verifye ankò pita pou nouvo atik.",
+    "otherCategories": "Lòt Kategori yo"
+  }
+}

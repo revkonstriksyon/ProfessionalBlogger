@@ -1,134 +1,128 @@
-import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Article, Category } from '@shared/schema';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { useLanguage } from '@/hooks/useLanguage';
+import { format } from 'date-fns';
+import { useLang } from '@/contexts/LangContext';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import type { Article } from '@shared/schema';
 
-const LatestNews: React.FC = () => {
+const LatestNews = () => {
   const { t } = useTranslation();
-  const { language } = useLanguage();
-  const [filter, setFilter] = useState('all');
-  const [page, setPage] = useState(1);
+  const { getLocalizedContent } = useLang();
 
-  const { data: latestArticles = [], isLoading } = useQuery<Article[]>({
-    queryKey: ['/api/articles/latest', { limit: page * 3 }],
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ['/api/categories'],
   });
 
-  const filteredArticles = filter === 'all' 
-    ? latestArticles 
-    : latestArticles.filter(article => {
-        if (filter === 'politics') return article.categoryId === 2;
-        if (filter === 'economy') return article.categoryId === 3;
-        return true;
-      });
+  const { data: articles, isLoading } = useQuery<Article[]>({
+    queryKey: ['/api/articles', { limit: 3 }],
+  });
 
-  return (
-    <section className="mb-12">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="font-heading text-2xl font-bold text-primary">{t('latest.title')}</h2>
-        <div className="flex space-x-1">
-          <button 
-            className={`px-3 py-1 text-sm ${filter === 'all' 
-              ? 'border border-accent text-accent rounded-full hover:bg-accent hover:text-white transition' 
-              : 'border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition'}`}
-            onClick={() => setFilter('all')}
-          >
-            {t('latest.all')}
-          </button>
-          <button 
-            className={`px-3 py-1 text-sm ${filter === 'politics' 
-              ? 'border border-accent text-accent rounded-full hover:bg-accent hover:text-white transition' 
-              : 'border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition'}`}
-            onClick={() => setFilter('politics')}
-          >
-            {t('latest.politics')}
-          </button>
-          <button 
-            className={`px-3 py-1 text-sm ${filter === 'economy' 
-              ? 'border border-accent text-accent rounded-full hover:bg-accent hover:text-white transition' 
-              : 'border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition'}`}
-            onClick={() => setFilter('economy')}
-          >
-            {t('latest.economy')}
-          </button>
-        </div>
-      </div>
+  const getCategoryName = (categoryId: number) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? getLocalizedContent(category) : '';
+  };
 
-      <div className="space-y-6">
-        {isLoading 
-          ? Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row">
-                <div className="md:w-1/4 mb-4 md:mb-0 md:mr-4">
-                  <Skeleton className="w-full h-32 md:h-full rounded-lg" />
-                </div>
-                <div className="md:w-3/4">
-                  <Skeleton className="h-5 w-20 rounded-full mb-2" />
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full mb-3" />
-                  <div className="flex justify-between items-center">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-4 w-24" />
+  const getCategoryColor = (categoryId: number) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.color : '#D42E12';
+  };
+
+  if (isLoading) {
+    return (
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-8">
+            <Skeleton className="h-8 w-40 bg-gray-200" />
+            <Skeleton className="h-6 w-32 bg-gray-200" />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-white">
+                <Skeleton className="h-48 w-full bg-gray-200" />
+                <div className="p-6">
+                  <Skeleton className="h-6 w-full bg-gray-200 mb-2" />
+                  <Skeleton className="h-6 w-3/4 bg-gray-200 mb-4" />
+                  <Skeleton className="h-4 w-full bg-gray-200 mb-2" />
+                  <Skeleton className="h-4 w-5/6 bg-gray-200 mb-2" />
+                  <Skeleton className="h-4 w-4/6 bg-gray-200 mb-4" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-20 bg-gray-200" />
+                    <Skeleton className="h-4 w-16 bg-gray-200" />
                   </div>
                 </div>
               </div>
-            ))
-          : filteredArticles.map((article) => (
-              <article key={article.id} className="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row">
-                <div className="md:w-1/4 mb-4 md:mb-0 md:mr-4">
-                  <img
-                    src={article.imageUrl}
-                    alt={article.title[language]}
-                    className="w-full h-32 md:h-full object-cover rounded-lg"
-                  />
-                </div>
-                <div className="md:w-3/4">
-                  <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full mb-2">
-                    {article.categoryId === 5 ? 'AGRIKILTI' : 
-                     article.categoryId === 7 ? 'TEKNOLOJI' : 
-                     article.categoryId === 6 ? 'SANTE' : 'KATEGORI'}
-                  </span>
-                  <Link href={`/article/${article.slug}`}>
-                    <a>
-                      <h3 className="font-heading font-bold text-lg mb-2 hover:text-accent">
-                        {article.title[language]}
-                      </h3>
-                    </a>
-                  </Link>
-                  <p className="text-gray-600 text-sm mb-3">{article.excerpt[language]}</p>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center text-sm">
-                      <img
-                        src={article.authorImageUrl || 'https://via.placeholder.com/40'}
-                        alt={article.author}
-                        className="w-6 h-6 rounded-full mr-2"
-                      />
-                      <span className="text-gray-700">{article.author}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      <i className="far fa-clock mr-1"></i> 
-                      {new Date(article.publishedAt).toLocaleDateString(
-                        language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'ht'
-                      )}
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!articles || articles.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="py-12 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-heading font-bold text-[#00209F]">{t('latestNews.title')}</h2>
+          <Link href="/news" className="text-[#D42E12] font-medium hover:text-[#00209F]">
+            {t('latestNews.viewAll')} <i className="fas fa-arrow-right ml-1"></i>
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.map(article => {
+            const formattedDate = article.publishedAt 
+              ? format(new Date(article.publishedAt), 'd MMM yyyy')
+              : '';
+              
+            return (
+              <article key={article.id} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-white">
+                <div className="relative h-48">
+                  {article.imageUrl ? (
+                    <img 
+                      src={article.imageUrl} 
+                      alt={getLocalizedContent(article) as string} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img 
+                      src={`https://source.unsplash.com/random/400x250?sig=${article.id}`}
+                      alt={getLocalizedContent(article) as string}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  <div className="absolute top-4 left-4">
+                    <span 
+                      className="inline-block px-3 py-1 text-white text-xs font-semibold rounded-full"
+                      style={{ backgroundColor: getCategoryColor(article.categoryId) }}
+                    >
+                      {getCategoryName(article.categoryId)}
                     </span>
                   </div>
                 </div>
+                <div className="p-6">
+                  <h3 className="font-heading font-bold text-xl mb-3 line-clamp-2 hover:text-[#D42E12] transition">
+                    {getLocalizedContent(article)}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">{formattedDate}</span>
+                    <Link href={`/article/${article.slug}`} className="text-[#00209F] font-medium hover:text-[#D42E12]">
+                      {t('common.readMore')}
+                    </Link>
+                  </div>
+                </div>
               </article>
-            ))}
-
-        {filteredArticles.length > 0 && (
-          <div className="flex justify-center mt-8">
-            <Button 
-              variant="outline" 
-              onClick={() => setPage(prev => prev + 1)}
-              className="px-6 py-2 border border-accent text-accent rounded-full hover:bg-accent hover:text-white transition"
-            >
-              {t('latest.loadMore')} <i className="fas fa-angle-down ml-1"></i>
-            </Button>
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
     </section>
   );

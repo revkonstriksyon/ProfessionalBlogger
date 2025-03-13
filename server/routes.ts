@@ -1,284 +1,167 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertSubscriberSchema, insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
-import {
-  insertSubscriberSchema,
-  insertContactMessageSchema,
-  insertCommentSchema,
-  languages,
-  type Language
-} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // API Routes - all prefixed with /api
-  // We're defining individual routes with their full paths, no need for a separate router
-
   // Categories
-  app.get('/api/categories', async (_req: Request, res: Response) => {
+  app.get("/api/categories", async (req: Request, res: Response) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching categories' });
+      res.status(500).json({ message: "Error fetching categories" });
+    }
+  });
+
+  app.get("/api/categories/:slug", async (req: Request, res: Response) => {
+    try {
+      const category = await storage.getCategoryBySlug(req.params.slug);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json(category);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching category" });
     }
   });
 
   // Articles
-  app.get('/api/articles', async (req: Request, res: Response) => {
+  app.get("/api/articles", async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const offset = parseInt(req.query.offset as string) || 0;
-      const articles = await storage.getArticles(limit, offset);
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const articles = await storage.getArticles(limit);
       res.json(articles);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching articles' });
+      res.status(500).json({ message: "Error fetching articles" });
     }
   });
 
-  app.get('/api/articles/featured', async (req: Request, res: Response) => {
+  app.get("/api/articles/featured", async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 3;
-      const articles = await storage.getFeaturedArticles(limit);
-      res.json(articles);
+      const featuredArticles = await storage.getFeaturedArticles();
+      res.json(featuredArticles);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching featured articles' });
+      res.status(500).json({ message: "Error fetching featured articles" });
     }
   });
 
-  app.get('/api/articles/latest', async (req: Request, res: Response) => {
+  app.get("/api/articles/category/:id", async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 5;
-      const articles = await storage.getLatestArticles(limit);
-      res.json(articles);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching latest articles' });
-    }
-  });
-
-  app.get('/api/articles/breaking-news', async (_req: Request, res: Response) => {
-    try {
-      const articles = await storage.getBreakingNews();
-      res.json(articles);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching breaking news' });
-    }
-  });
-
-  app.get('/api/articles/category/:slug', async (req: Request, res: Response) => {
-    try {
-      const { slug } = req.params;
-      const limit = parseInt(req.query.limit as string) || 10;
-      const offset = parseInt(req.query.offset as string) || 0;
-      
-      const articles = await storage.getArticlesByCategory(slug, limit, offset);
-      res.json(articles);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching articles by category' });
-    }
-  });
-
-  app.get('/api/articles/:slug', async (req: Request, res: Response) => {
-    try {
-      const { slug } = req.params;
-      const article = await storage.getArticleBySlug(slug);
-      
-      if (!article) {
-        return res.status(404).json({ message: 'Article not found' });
+      const categoryId = parseInt(req.params.id);
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ message: "Invalid category ID" });
       }
-      
-      // Increment view count
-      await storage.incrementArticleViews(article.id);
-      
+      const articles = await storage.getArticlesByCategory(categoryId);
+      res.json(articles);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching articles by category" });
+    }
+  });
+
+  app.get("/api/articles/:slug", async (req: Request, res: Response) => {
+    try {
+      const article = await storage.getArticleBySlug(req.params.slug);
+      if (!article) {
+        return res.status(404).json({ message: "Article not found" });
+      }
       res.json(article);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching article' });
+      res.status(500).json({ message: "Error fetching article" });
     }
   });
 
   // Media
-  app.get('/api/media', async (req: Request, res: Response) => {
+  app.get("/api/media/:type", async (req: Request, res: Response) => {
     try {
-      const type = req.query.type as string | undefined;
-      const limit = parseInt(req.query.limit as string) || 10;
-      const offset = parseInt(req.query.offset as string) || 0;
-      
-      const mediaItems = await storage.getMediaItems(type, limit, offset);
+      const type = req.params.type;
+      if (!["photo", "video", "podcast"].includes(type)) {
+        return res.status(400).json({ message: "Invalid media type" });
+      }
+      const mediaItems = await storage.getMediaByType(type);
       res.json(mediaItems);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching media items' });
-    }
-  });
-
-  app.get('/api/media/:id', async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      
-      if (isNaN(id)) {
-        return res.status(400).json({ message: 'Invalid ID format' });
-      }
-      
-      const mediaItem = await storage.getMediaItemById(id);
-      
-      if (!mediaItem) {
-        return res.status(404).json({ message: 'Media item not found' });
-      }
-      
-      res.json(mediaItem);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching media item' });
+      res.status(500).json({ message: "Error fetching media" });
     }
   });
 
   // Polls
-  app.get('/api/polls/active', async (_req: Request, res: Response) => {
+  app.get("/api/polls/active", async (req: Request, res: Response) => {
     try {
-      const activePoll = await storage.getActivePoll();
+      const activePolls = await storage.getActivePolls();
       
-      if (!activePoll) {
-        return res.status(404).json({ message: 'No active poll found' });
+      if (activePolls.length === 0) {
+        return res.json({ poll: null, options: [] });
       }
       
-      res.json(activePoll);
+      const activePoll = activePolls[0]; // Get the first active poll
+      const pollWithOptions = await storage.getPollWithOptions(activePoll.id);
+      
+      if (!pollWithOptions) {
+        return res.status(404).json({ message: "Poll not found" });
+      }
+      
+      res.json(pollWithOptions);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching active poll' });
+      res.status(500).json({ message: "Error fetching active poll" });
     }
   });
 
-  app.post('/api/polls/vote', async (req: Request, res: Response) => {
+  app.post("/api/polls/vote", async (req: Request, res: Response) => {
     try {
       const schema = z.object({
         optionId: z.number()
       });
       
-      const result = schema.safeParse(req.body);
-      
-      if (!result.success) {
-        return res.status(400).json({ message: 'Invalid poll option' });
+      const parsed = schema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid option ID" });
       }
       
-      const { optionId } = result.data;
-      const updatedOption = await storage.votePoll(optionId);
+      const { optionId } = parsed.data;
+      await storage.voteForOption(optionId);
       
-      if (!updatedOption) {
-        return res.status(404).json({ message: 'Poll option not found' });
+      // Return the updated poll with options
+      const pollOptions = Array.from(await storage.getActivePolls());
+      if (pollOptions.length === 0) {
+        return res.status(404).json({ message: "No active polls found" });
       }
       
-      // Get the updated poll with all options
-      const activePoll = await storage.getActivePoll();
-      res.json(activePoll);
+      const updatedPollWithOptions = await storage.getPollWithOptions(pollOptions[0].id);
+      res.json(updatedPollWithOptions);
     } catch (error) {
-      res.status(500).json({ message: 'Error voting on poll' });
+      res.status(500).json({ message: "Error voting for poll option" });
     }
   });
 
-  // Comments
-  app.get('/api/articles/:articleId/comments', async (req: Request, res: Response) => {
+  // Subscribers
+  app.post("/api/subscribers", async (req: Request, res: Response) => {
     try {
-      const articleId = parseInt(req.params.articleId);
-      
-      if (isNaN(articleId)) {
-        return res.status(400).json({ message: 'Invalid article ID format' });
+      const parsed = insertSubscriberSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid subscriber data", errors: parsed.error.format() });
       }
       
-      const comments = await storage.getCommentsByArticle(articleId);
-      res.json(comments);
+      const newSubscriber = await storage.createSubscriber(parsed.data);
+      res.status(201).json(newSubscriber);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching comments' });
+      res.status(500).json({ message: "Error creating subscriber" });
     }
   });
 
-  app.post('/api/articles/:articleId/comments', async (req: Request, res: Response) => {
+  // Contact Messages
+  app.post("/api/contact", async (req: Request, res: Response) => {
     try {
-      const articleId = parseInt(req.params.articleId);
-      
-      if (isNaN(articleId)) {
-        return res.status(400).json({ message: 'Invalid article ID format' });
+      const parsed = insertContactMessageSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid message data", errors: parsed.error.format() });
       }
       
-      // Validate comment data
-      const commentValidation = insertCommentSchema.safeParse({
-        ...req.body,
-        articleId
-      });
-      
-      if (!commentValidation.success) {
-        return res.status(400).json({ message: 'Invalid comment data', errors: commentValidation.error.errors });
-      }
-      
-      const comment = await storage.createComment(commentValidation.data);
-      res.status(201).json(comment);
+      const newMessage = await storage.createContactMessage(parsed.data);
+      res.status(201).json(newMessage);
     } catch (error) {
-      res.status(500).json({ message: 'Error creating comment' });
-    }
-  });
-
-  // Newsletter subscription
-  app.post('/api/subscribe', async (req: Request, res: Response) => {
-    try {
-      // Validate subscriber data
-      const subscriberValidation = insertSubscriberSchema.safeParse(req.body);
-      
-      if (!subscriberValidation.success) {
-        return res.status(400).json({ message: 'Invalid subscription data', errors: subscriberValidation.error.errors });
-      }
-      
-      // Check if preferred language is valid
-      const { preferredLanguage } = subscriberValidation.data;
-      if (!languages.includes(preferredLanguage as any)) {
-        return res.status(400).json({ message: 'Invalid language preference' });
-      }
-      
-      try {
-        const subscriber = await storage.createSubscriber(subscriberValidation.data);
-        res.status(201).json({ message: 'Subscription successful', subscriber });
-      } catch (error: any) {
-        if (error.message === 'Email already subscribed') {
-          return res.status(409).json({ message: 'Email already subscribed' });
-        }
-        throw error;
-      }
-    } catch (error) {
-      res.status(500).json({ message: 'Error processing subscription' });
-    }
-  });
-
-  // Contact form
-  app.post('/api/contact', async (req: Request, res: Response) => {
-    try {
-      // Validate contact message data
-      const messageValidation = insertContactMessageSchema.safeParse(req.body);
-      
-      if (!messageValidation.success) {
-        return res.status(400).json({ message: 'Invalid contact message data', errors: messageValidation.error.errors });
-      }
-      
-      const contactMessage = await storage.createContactMessage(messageValidation.data);
-      res.status(201).json({ message: 'Message sent successfully', contactMessage });
-    } catch (error) {
-      res.status(500).json({ message: 'Error sending message' });
-    }
-  });
-
-  // Search
-  app.get('/api/search', async (req: Request, res: Response) => {
-    try {
-      const query = req.query.q as string;
-      const lang = (req.query.lang as string) || 'ht';
-      
-      if (!query) {
-        return res.status(400).json({ message: 'Search query is required' });
-      }
-      
-      // Validate language
-      if (!languages.includes(lang as Language)) {
-        return res.status(400).json({ message: 'Invalid language' });
-      }
-      
-      const results = await storage.searchArticles(query, lang as Language);
-      res.json(results);
-    } catch (error) {
-      res.status(500).json({ message: 'Error performing search' });
+      res.status(500).json({ message: "Error sending message" });
     }
   });
 

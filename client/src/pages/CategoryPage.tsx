@@ -1,162 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'wouter';
+import { useEffect } from 'react';
+import { useRoute, Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
+import { Article, Category } from '@shared/schema';
 import { useTranslation } from 'react-i18next';
-import { useLanguage } from '@/hooks/useLanguage';
-import { Link } from 'wouter';
-import { Skeleton } from '@/components/ui/skeleton';
+import { format } from 'date-fns';
+import { useLang } from '@/contexts/LangContext';
+import { FullPageLoading } from '@/components/ui/loading';
 import { Button } from '@/components/ui/button';
-import PopularPosts from '@/components/sidebar/PopularPosts';
-import Newsletter from '@/components/sidebar/Newsletter';
-import PollWidget from '@/components/sidebar/PollWidget';
-import TagsWidget from '@/components/sidebar/TagsWidget';
-import SocialMedia from '@/components/sidebar/SocialMedia';
-import type { Article, Category } from '@shared/schema';
 
-const CategoryPage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+const CategoryPage = () => {
   const { t } = useTranslation();
-  const { language } = useLanguage();
-  const [page, setPage] = useState(1);
-  const limit = 5;
+  const { getLocalizedContent } = useLang();
+  const [match, params] = useRoute('/category/:slug');
+  
+  const slug = params?.slug || '';
 
-  // Reset page when slug changes
-  useEffect(() => {
-    setPage(1);
-  }, [slug]);
-
-  // Fetch category
-  const { data: categories } = useQuery<Category[]>({
+  // Get category data
+  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
-  // Get the current category
-  const currentCategory = categories?.find(cat => cat.slug === slug);
+  const category = categories.find(c => c.slug === slug);
 
-  // Fetch articles by category
-  const { data: articles = [], isLoading } = useQuery<Article[]>({
-    queryKey: [`/api/articles/category/${slug}`, { limit: page * limit, offset: 0 }],
-    enabled: !!slug,
+  // Get articles for this category
+  const { data: articles = [], isLoading: isArticlesLoading } = useQuery<Article[]>({
+    queryKey: [`/api/articles/category/${category?.id}`],
+    enabled: !!category?.id,
   });
 
-  const loadMore = () => {
-    setPage(prevPage => prevPage + 1);
-  };
+  useEffect(() => {
+    // Scroll to top when page loads
+    window.scrollTo(0, 0);
+  }, [slug]);
 
-  const getCategoryName = () => {
-    if (!currentCategory) return slug;
-    // Convert first letter to uppercase
-    return currentCategory.name.charAt(0).toUpperCase() + currentCategory.name.slice(1);
-  };
+  if (isCategoriesLoading || isArticlesLoading) {
+    return <FullPageLoading text={t('category.loading')} />;
+  }
+
+  if (!category) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('category.notFound')}</h1>
+          <p className="mb-8">{t('category.notFoundDesc')}</p>
+          <Button asChild>
+            <Link href="/">{t('common.backToHome')}</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="font-heading text-3xl font-bold text-primary mb-2">{getCategoryName()}</h1>
-        <div className="h-1 w-20 bg-accent"></div>
+    <div className="bg-white">
+      {/* Category Header */}
+      <div className="bg-[#00209F] text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div 
+            className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4"
+            style={{ 
+              backgroundColor: `${category.color}20`,
+              color: '#fff'
+            }}
+          >
+            <i className={`fas fa-${category.icon} fa-lg`}></i>
+          </div>
+          
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
+            {getLocalizedContent(category)}
+          </h1>
+          
+          <p className="max-w-2xl mx-auto text-lg text-gray-200">
+            {t('category.description', { category: getLocalizedContent(category) })}
+          </p>
+        </div>
       </div>
-
-      <div className="md:flex md:space-x-6">
-        <div className="md:w-2/3">
-          {isLoading ? (
-            Array.from({ length: limit }).map((_, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row mb-6">
-                <div className="md:w-1/4 mb-4 md:mb-0 md:mr-4">
-                  <Skeleton className="w-full h-32 md:h-full rounded-lg" />
-                </div>
-                <div className="md:w-3/4">
-                  <Skeleton className="h-5 w-20 rounded-full mb-2" />
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full mb-3" />
-                  <div className="flex justify-between items-center">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : articles.length > 0 ? (
-            <div className="space-y-6">
-              {articles.map((article) => (
-                <article key={article.id} className="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row">
-                  <div className="md:w-1/4 mb-4 md:mb-0 md:mr-4">
-                    <img
-                      src={article.imageUrl}
-                      alt={article.title[language]}
-                      className="w-full h-32 md:h-full object-cover rounded-lg"
+      
+      {/* Articles List */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {articles.length === 0 ? (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-medium text-gray-600 mb-4">{t('category.noArticles')}</h2>
+            <p className="mb-8 text-gray-500">{t('category.noArticlesDesc')}</p>
+            <Button asChild>
+              <Link href="/">{t('common.backToHome')}</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map(article => (
+              <article key={article.id} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-white">
+                <div className="relative h-48">
+                  {article.imageUrl ? (
+                    <img 
+                      src={article.imageUrl} 
+                      alt={getLocalizedContent(article) as string} 
+                      className="w-full h-full object-cover"
                     />
-                  </div>
-                  <div className="md:w-3/4">
-                    <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full mb-2">
-                      {getCategoryName().toUpperCase()}
-                    </span>
-                    <Link href={`/article/${article.slug}`}>
-                      <a>
-                        <h3 className="font-heading font-bold text-lg mb-2 hover:text-accent">
-                          {article.title[language]}
-                        </h3>
-                      </a>
-                    </Link>
-                    <p className="text-gray-600 text-sm mb-3">{article.excerpt[language]}</p>
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center text-sm">
-                        <img
-                          src={article.authorImageUrl || 'https://via.placeholder.com/40'}
-                          alt={article.author}
-                          className="w-6 h-6 rounded-full mr-2"
-                        />
-                        <span className="text-gray-700">{article.author}</span>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        <i className="far fa-clock mr-1"></i> 
-                        {new Date(article.publishedAt).toLocaleDateString(
-                          language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : 'ht'
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              ))}
-
-              {/* Load More Button */}
-              {articles.length >= page * limit && (
-                <div className="flex justify-center mt-8">
-                  <Button 
-                    variant="outline" 
-                    onClick={loadMore}
-                    className="px-6 py-2 border border-accent text-accent rounded-full hover:bg-accent hover:text-white transition"
-                  >
-                    {t('latest.loadMore')} <i className="fas fa-angle-down ml-1"></i>
-                  </Button>
+                  ) : (
+                    <img 
+                      src={`https://source.unsplash.com/random/400x250?sig=${article.id}`}
+                      alt={getLocalizedContent(article) as string}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-30"></div>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                {t('categoryPage.noArticles')}
-              </h3>
-              <p className="text-gray-600 mb-4">
-                {t('categoryPage.checkBackSoon')}
-              </p>
-              <Link href="/">
-                <a className="inline-block px-5 py-2 bg-accent text-white rounded-full hover:bg-accent/80 transition">
-                  {t('categoryPage.backToHome')}
-                </a>
-              </Link>
-            </div>
-          )}
-        </div>
+                <div className="p-6">
+                  <h3 className="font-heading font-bold text-xl mb-3 line-clamp-2 hover:text-[#D42E12] transition">
+                    {getLocalizedContent(article)}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">
+                      {article.publishedAt 
+                        ? format(new Date(article.publishedAt), 'd MMM yyyy')
+                        : ''}
+                    </span>
+                    <Link href={`/article/${article.slug}`} className="text-[#00209F] font-medium hover:text-[#D42E12]">
+                      {t('common.readMore')}
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* Categories Link */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 text-center">
+        <h2 className="text-2xl font-heading font-bold text-[#00209F] mb-6">{t('category.otherCategories')}</h2>
         
-        <div className="md:w-1/3 space-y-8 mt-8 md:mt-0">
-          <PopularPosts />
-          <Newsletter />
-          <PollWidget />
-          <TagsWidget />
-          <SocialMedia />
+        <div className="flex flex-wrap justify-center gap-4">
+          {categories.filter(c => c.id !== category.id).map(otherCategory => (
+            <Link 
+              key={otherCategory.id} 
+              href={`/category/${otherCategory.slug}`}
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+            >
+              <div 
+                className="w-6 h-6 rounded-full flex items-center justify-center mr-2"
+                style={{ 
+                  backgroundColor: otherCategory.color,
+                  color: '#fff'
+                }}
+              >
+                <i className={`fas fa-${otherCategory.icon} fa-xs`}></i>
+              </div>
+              <span className="font-medium">{getLocalizedContent(otherCategory)}</span>
+            </Link>
+          ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

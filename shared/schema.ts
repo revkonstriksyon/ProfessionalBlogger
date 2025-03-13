@@ -1,89 +1,82 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Categories for blog posts
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  email: text("email").notNull().unique(),
+  isAdmin: boolean("is_admin").default(false),
+});
+
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
+  nameHt: text("name_ht").notNull(),
+  nameFr: text("name_fr").notNull(),
+  nameEn: text("name_en").notNull(),
   slug: text("slug").notNull().unique(),
+  icon: text("icon").notNull(),
+  color: text("color").notNull().default("#00209F"),
 });
 
-export const insertCategorySchema = createInsertSchema(categories).pick({
-  name: true,
-  slug: true,
-});
-
-// Languages supported
-export const languages = ["ht", "fr", "en"] as const;
-export type Language = typeof languages[number];
-
-// Articles/posts
 export const articles = pgTable("articles", {
   id: serial("id").primaryKey(),
+  titleHt: text("title_ht").notNull(),
+  titleFr: text("title_fr").notNull(),
+  titleEn: text("title_en").notNull(),
+  contentHt: text("content_ht").notNull(),
+  contentFr: text("content_fr").notNull(),
+  contentEn: text("content_en").notNull(),
+  excerpt: text("excerpt"),
   slug: text("slug").notNull().unique(),
+  imageUrl: text("image_url"),
   categoryId: integer("category_id").notNull(),
+  authorId: integer("author_id").notNull(),
   featured: boolean("featured").default(false),
-  breakingNews: boolean("breaking_news").default(false),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
-  // Using jsonb to store translations for title, content, and excerpt
-  title: jsonb("title").notNull().$type<Record<Language, string>>(),
-  content: jsonb("content").notNull().$type<Record<Language, string>>(),
-  excerpt: jsonb("excerpt").notNull().$type<Record<Language, string>>(),
-  author: text("author").notNull(),
-  authorImageUrl: text("author_image_url"),
-  imageUrl: text("image_url").notNull(),
-  viewCount: integer("view_count").default(0),
-  commentCount: integer("comment_count").default(0),
-  likeCount: integer("like_count").default(0),
 });
 
-// Media items (photos, videos, podcasts)
-export const mediaItems = pgTable("media_items", {
+export const media = pgTable("media", {
   id: serial("id").primaryKey(),
-  type: text("type").notNull(), // 'photo', 'video', 'podcast'
-  title: jsonb("title").notNull().$type<Record<Language, string>>(),
+  titleHt: text("title_ht").notNull(),
+  titleFr: text("title_fr").notNull(),
+  titleEn: text("title_en").notNull(),
+  type: text("type").notNull(), // photo, video, podcast
   url: text("url").notNull(),
   thumbnailUrl: text("thumbnail_url"),
+  descriptionHt: text("description_ht"),
+  descriptionFr: text("description_fr"),
+  descriptionEn: text("description_en"),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
 });
 
-// Comments
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
-  articleId: integer("article_id").notNull(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  content: text("content").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
-// Polls
 export const polls = pgTable("polls", {
   id: serial("id").primaryKey(),
-  question: jsonb("question").notNull().$type<Record<Language, string>>(),
-  active: boolean("active").default(true),
+  questionHt: text("question_ht").notNull(),
+  questionFr: text("question_fr").notNull(),
+  questionEn: text("question_en").notNull(),
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Poll options
 export const pollOptions = pgTable("poll_options", {
   id: serial("id").primaryKey(),
   pollId: integer("poll_id").notNull(),
-  text: jsonb("text").notNull().$type<Record<Language, string>>(),
+  optionHt: text("option_ht").notNull(),
+  optionFr: text("option_fr").notNull(),
+  optionEn: text("option_en").notNull(),
   votes: integer("votes").default(0),
 });
 
-// Newsletter subscribers
 export const subscribers = pgTable("subscribers", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   preferredLanguage: text("preferred_language").notNull(),
-  subscribedAt: timestamp("subscribed_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Contact messages
 export const contactMessages = pgTable("contact_messages", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -94,54 +87,58 @@ export const contactMessages = pgTable("contact_messages", {
 });
 
 // Insert schemas
-export const insertArticleSchema = createInsertSchema(articles).omit({
-  id: true,
-  viewCount: true,
-  commentCount: true,
-  likeCount: true,
+export const insertUserSchema = createInsertSchema(users).pick({
+  username: true,
+  password: true,
+  email: true,
+  isAdmin: true,
 });
 
-export const insertMediaItemSchema = createInsertSchema(mediaItems).omit({
-  id: true,
+export const insertCategorySchema = createInsertSchema(categories);
+
+export const insertArticleSchema = createInsertSchema(articles);
+
+export const insertMediaSchema = createInsertSchema(media);
+
+export const insertPollSchema = createInsertSchema(polls).pick({
+  questionHt: true,
+  questionFr: true,
+  questionEn: true,
+  isActive: true,
 });
 
-export const insertCommentSchema = createInsertSchema(comments).omit({
-  id: true,
-  createdAt: true,
+export const insertPollOptionSchema = createInsertSchema(pollOptions).pick({
+  pollId: true,
+  optionHt: true,
+  optionFr: true,
+  optionEn: true,
 });
 
-export const insertPollSchema = createInsertSchema(polls).omit({
-  id: true,
-  createdAt: true,
+export const insertSubscriberSchema = createInsertSchema(subscribers).pick({
+  name: true,
+  email: true,
+  preferredLanguage: true,
 });
 
-export const insertPollOptionSchema = createInsertSchema(pollOptions).omit({
-  id: true,
-  votes: true,
-});
-
-export const insertSubscriberSchema = createInsertSchema(subscribers).omit({
-  id: true,
-  subscribedAt: true,
-});
-
-export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
-  id: true,
-  createdAt: true,
+export const insertContactMessageSchema = createInsertSchema(contactMessages).pick({
+  name: true,
+  email: true,
+  subject: true,
+  message: true,
 });
 
 // Types
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 
 export type Article = typeof articles.$inferSelect;
 export type InsertArticle = z.infer<typeof insertArticleSchema>;
 
-export type MediaItem = typeof mediaItems.$inferSelect;
-export type InsertMediaItem = z.infer<typeof insertMediaItemSchema>;
-
-export type Comment = typeof comments.$inferSelect;
-export type InsertComment = z.infer<typeof insertCommentSchema>;
+export type Media = typeof media.$inferSelect;
+export type InsertMedia = z.infer<typeof insertMediaSchema>;
 
 export type Poll = typeof polls.$inferSelect;
 export type InsertPoll = z.infer<typeof insertPollSchema>;
