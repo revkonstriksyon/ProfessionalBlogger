@@ -1,137 +1,224 @@
 {
-  "common": {
-    "loading": "Chajman...",
-    "sending": "Voye...",
-    "readMore": "Li Plis",
-    "backToHome": "Retounen nan paj akèy",
-    "viewAll": "Wè tout"
-  },
+  "languageCode": "ht",
+  "siteName": "Ayiti Nouvèl",
   "nav": {
-    "home": "Akèy",
-    "about": "Kilès Nou Ye",
-    "blog": "Blog",
-    "contact": "Kontakte Nou",
-    "more": "Plis",
-    "search": "Chèche"
-  },
-  "language": {
-    "label": "Lang",
-    "ht": "Kreyòl",
-    "fr": "Français",
-    "en": "English"
-  },
-  "validation": {
-    "nameRequired": "Tanpri antre non ou",
-    "emailRequired": "Tanpri antre imèl ou",
-    "emailInvalid": "Tanpri antre yon imèl ki valid",
-    "subjectRequired": "Tanpri antre yon sijè",
-    "messageRequired": "Tanpri antre yon mesaj ki genyen omwen 10 karaktè"
-  },
-  "latestNews": {
-    "title": "Dènye Nouvèl",
-    "viewAll": "Tout Nouvèl"
+    "home": "AKÈY",
+    "media": "MEDYA",
+    "blog": "BLOG",
+    "contact": "KONTAK",
+    "about": "SOU NOU",
+    "privacy": "KONFIDANSYALITE",
+    "terms": "KONDISYON",
+    "sitemap": "SIT MAP"
   },
   "categories": {
-    "title": "Kategori yo",
-    "articles": "atik"
+    "news": "AKTUALITE",
+    "politics": "POLITIK",
+    "culture": "KILTI",
+    "sports": "ESPÒ",
+    "education": "EDIKASYON",
+    "health": "SANTE",
+    "technology": "TEKNOLOJI",
+    "1": "AKTUALITE",
+    "2": "POLITIK",
+    "3": "KILTI",
+    "4": "ESPÒ",
+    "5": "EDIKASYON",
+    "6": "SANTE",
+    "7": "TEKNOLOJI"
   },
-  "blog": {
-    "title": "Blog ak Analiz",
-    "viewAll": "Tout Analiz",
-    "readTime": "lekti"
+  "authorRoles": {
+    "1": "Jounalis",
+    "2": "Analis Politik",
+    "3": "Ekriven Kiltirèl",
+    "4": "Kwonikè Espòtif",
+    "5": "Edikasyon Ekspè",
+    "6": "Espesyalis Sante",
+    "7": "Teknoloji Ekspè"
+  },
+  "hero": {
+    "title": "Byenveni nan Ayiti Nouvèl",
+    "subtitle": "Sit entènèt blog modèn ak profesyonèl ki kouvri tout kalite sijè ki gen rapò ak Ayiti.",
+    "latestNewsButton": "Dènye Nouvèl",
+    "subscribeButton": "Abòne Ou"
+  },
+  "featuredNews": {
+    "title": "Dènye Nouvèl yo"
+  },
+  "blogAnalysis": {
+    "title": "Blog ak Analiz"
+  },
+  "common": {
+    "viewAll": "WÈ TOUT",
+    "min": "min",
+    "read": "lekti",
+    "noArticlesFound": "Pa gen atik ki disponib nan moman sa a.",
+    "submitting": "Ap soumèt...",
+    "categoryNotFound": "Kategori a pa jwenn",
+    "loading": "Ap chaje..."
   },
   "media": {
     "title": "Medya",
-    "photos": "Foto",
-    "videos": "Videyo",
-    "podcasts": "Podcast",
-    "noPhotos": "Pa gen foto pou montre pou kounye a",
-    "noVideos": "Pa gen videyo pou montre pou kounye a",
-    "noPodcasts": "Pa gen podcast pou montre pou kounye a",
-    "views": "views",
-    "with": "Avèk"
+    "pageTitle": "Medya",
+    "pageDescription": "Foto, Videyo, ak Podcast ki gen rapò ak Ayiti",
+    "noItemsFound": "Pa gen atik medya ki disponib nan moman sa a.",
+    "audioNotSupported": "Navigatè ou a pa sipòte eleman odyo a.",
+    "viewMore": {
+      "photo": "Wè Plis Foto",
+      "video": "Wè Plis Videyo",
+      "podcast": "Wè Plis Podcast"
+    }
+  },
+  "mediaType": {
+    "photo": "Foto",
+    "video": "Videyo",
+    "podcast": "Podcast"
   },
   "poll": {
-    "title": "Sondaj ak Opinyon",
-    "noPollsAvailable": "Pa gen sondaj ki disponib pou kounye a",
-    "vote": "Vote",
-    "voteAgain": "Vote Ankò",
-    "results": "Rezilta",
-    "votes": "vòt",
-    "voteSuccess": "Vòt ou anrejistre!",
-    "voteSuccessDesc": "Mèsi paske w patisipe nan sondaj nou an.",
-    "voteError": "Erè pandan vòt la",
-    "voteErrorDesc": "Tanpri eseye ankò pita."
+    "title": "Sondaj Jounen an",
+    "voteButton": "Vote",
+    "noPollAvailable": "Pa gen sondaj ki disponib nan moman sa a.",
+    "totalVotes": "{{count}} repons",
+    "resultsDisclaimer": "Rezilta yo ap pibliye nan 24 èdtan. Mèsi pou patisipasyon ou!",
+    "success": {
+      "title": "Repons Anrejistre",
+      "description": "Mèsi pou patisipasyon ou nan sondaj sa a!"
+    },
+    "error": {
+      "title": "Erè",
+      "description": "Te gen yon erè lè n ap soumèt repons ou. Tanpri eseye ankò."
+    },
+    "selectOption": {
+      "title": "Seleksyon Obligatwa",
+      "description": "Tanpri chwazi yon opsyon anvan ou vote."
+    }
   },
-  "newsletter": {
-    "title": "Enskri pou Bilten",
-    "description": "Enskri pou resevwa dènye nouvèl yo nan imèl ou.",
-    "subscribe": "Abòne",
-    "stayInformed": "Rete enfòme!",
-    "receiveLatest": "Resevwa dènye nouvèl ak atik sou Ayiti nan imèl ou.",
-    "name": "Non",
-    "namePlaceholder": "Antre non ou",
-    "email": "Imèl",
-    "emailPlaceholder": "Antre imèl ou",
-    "preferredLanguage": "Lang Prefere",
-    "success": "Abònman reyisi!",
-    "successDesc": "Mèsi pou abònman ou. Ou pral resevwa dènye nouvèl nou yo.",
-    "error": "Erè pandan abònman",
-    "errorDesc": "Tanpri eseye ankò pita oswa itilize yon lòt imèl."
+  "subscription": {
+    "title": "Abòne Ou",
+    "description": "Resevwa dènye nouvèl ak atik yo dirèkteman nan bwat imèl ou.",
+    "namePlaceholder": "Non ou",
+    "emailPlaceholder": "Imèl ou",
+    "frequencyPlaceholder": "Chwazi frekans",
+    "buttonText": "Abòne",
+    "success": {
+      "title": "Abònman Reyisi!",
+      "description": "Ou pral kounye a resevwa dènye nouvèl nou yo nan imèl ou."
+    },
+    "error": {
+      "title": "Erè",
+      "description": "Te gen yon erè lè n ap trete abònman ou. Tanpri eseye ankò."
+    },
+    "frequency": {
+      "daily": "Chak jou",
+      "weekly": "Chak semèn",
+      "monthly": "Chak mwa"
+    }
+  },
+  "popularArticles": {
+    "title": "Atik Popilè"
+  },
+  "tags": {
+    "title": "Mo Kle yo",
+    "politics": "Politik",
+    "economy": "Ekonomi",
+    "culture": "Kilti",
+    "sports": "Espò",
+    "agriculture": "Agrikilti",
+    "tourism": "Touris",
+    "education": "Edikasyon",
+    "health": "Sante",
+    "technology": "Teknoloji",
+    "diaspora": "Dyaspora"
   },
   "contact": {
     "title": "Kontakte Nou",
-    "info": "Enfòmasyon Kontak",
-    "address": "Adrès",
-    "phone": "Telefòn",
-    "email": "Imèl",
-    "followUs": "Swiv Nou",
-    "sendMessage": "Voye nou yon mesaj",
-    "nameLabel": "Non",
-    "namePlaceholder": "Antre non ou",
-    "emailLabel": "Imèl",
-    "emailPlaceholder": "Antre imèl ou",
-    "subjectLabel": "Sijè",
-    "subjectPlaceholder": "Antre sijè mesaj la",
-    "messageLabel": "Mesaj",
-    "messagePlaceholder": "Ekri mesaj ou a",
-    "send": "Voye Mesaj",
-    "success": "Mesaj voye!",
-    "successDesc": "Mèsi pou mesaj ou. Nou pral kontakte w byento.",
-    "error": "Erè pandan anvwa mesaj la",
-    "errorDesc": "Tanpri eseye ankò pita."
+    "pageTitle": "Kontakte Nou",
+    "pageDescription": "Voye nou yon mesaj oswa sijesyon",
+    "description": "Nou ta renmen tande opinyon ou oswa sijesyon ou. Voye nou yon mesaj.",
+    "form": {
+      "name": "Non",
+      "email": "Imèl",
+      "subject": "Sijè",
+      "message": "Mesaj",
+      "submit": "Voye Mesaj"
+    },
+    "info": {
+      "title": "Enfòmasyon Kontak",
+      "address": {
+        "title": "Adrès",
+        "value": "123 Ri Kapwa, Pòtoprens, Ayiti"
+      },
+      "email": {
+        "title": "Imèl",
+        "value": "kontak@ayitinouvel.com"
+      },
+      "phone": {
+        "title": "Telefòn",
+        "value": "+509 1234 5678"
+      }
+    },
+    "social": {
+      "title": "Swiv Nou"
+    },
+    "success": {
+      "title": "Mesaj Voye!",
+      "description": "Mèsi pou mesaj ou. Nou pral kontakte ou byen vit."
+    },
+    "error": {
+      "title": "Erè",
+      "description": "Te gen yon erè lè n ap voye mesaj ou. Tanpri eseye ankò."
+    }
   },
   "footer": {
-    "description": "Yon platfòm ki bay enfòmasyon ki kredib sou Ayiti, ki prezante divès pwendvi epi ki ankouraje konvèsasyon pou yon pi bon demen.",
-    "categories": "Kategori yo",
+    "description": "Sit entènèt blog modèn ak profesyonèl ki kouvri tout kalite sijè ki gen rapò ak Ayiti.",
+    "categories": "Kategori",
     "quickLinks": "Lyen Rapid",
-    "privacy": "Règleman Vi Prive",
-    "terms": "Kondisyon Itilizasyon",
-    "rights": "Tout dwa rezève."
+    "subscription": "Abònman",
+    "subscriptionDescription": "Antre imèl ou pou resevwa notifikasyon sou dènye atik nou yo.",
+    "emailPlaceholder": "Imèl ou",
+    "subscribe": "Abòne",
+    "copyright": "Tout dwa rezève."
   },
   "search": {
-    "title": "Chèche",
-    "placeholder": "Antre sa ou vle chèche...",
+    "title": "Rechèch",
+    "placeholder": "Antre mo ou ap chèche...",
     "button": "Chèche",
-    "noResults": "Pa gen rezilta pou chèche sa a",
-    "tryAgain": "Tanpri eseye avèk lòt mo kle."
+    "resultsFor": "Rezilta pou \"{{query}}\"",
+    "resultsCount": "{{count}} atik yo jwenn",
+    "noResults": "Pa gen atik ki jwenn pou \"{{query}}\"",
+    "enterQuery": "Antre yon tèm rechèch",
+    "instructions": "Tape yon mo ou fraz ou vle chèche epi peze bouton Chèche a."
   },
   "article": {
-    "by": "Pa",
-    "minRead": "minit lekti",
-    "authorBio": "Jounalis eksperyanse ki kouvri aktyalite ayisyen depi plis pase 10 ane. Espesyalize nan analiz ekonomik ak politik Ayiti.",
-    "relatedArticles": "Atik ki gen rapò",
-    "loading": "Chajman atik...",
-    "notFound": "Atik Pa Jwenn",
-    "notFoundDesc": "Nou regrèt, atik ou chèche a pa disponib oswa li te siprime."
+    "tags": "Mo Kle",
+    "relatedArticles": "Atik Ki Gen Rapò",
+    "notFound": {
+      "title": "Atik pa jwenn",
+      "description": "Atik ou ap chèche a pa disponib oswa pa egziste ankò."
+    }
   },
   "category": {
-    "loading": "Chajman kategori...",
-    "notFound": "Kategori Pa Jwenn",
-    "notFoundDesc": "Nou regrèt, kategori ou chèche a pa egziste.",
-    "description": "Tout atik ki gen rapò ak {{category}}",
-    "noArticles": "Pa gen atik nan kategori sa a",
-    "noArticlesDesc": "Tanpri verifye ankò pita pou nouvo atik.",
-    "otherCategories": "Lòt Kategori yo"
+    "description": "Tout dènye atik yo nan kategori sa a."
+  },
+  "about": {
+    "pageTitle": "Sou Nou",
+    "pageDescription": "Aprann plis sou misyon ak ekip nou an",
+    "mission": {
+      "title": "Misyon Nou",
+      "description": "Misyon Ayiti Nouvèl se bay enfòmasyon ki kredib epi ki enkli tout aspè lavi an Ayiti ak dyaspora a. Nou kwè ke yon popilasyon byen enfòme kapab pran desizyon ki enfòme pou benefis sosyete a. Nou angaje nou pou kreye yon platfòm kote vwa tout Ayisyen yo ka tande, kèlkeswa orijin sosyal, kwayans oswa opinyon politik yo."
+    },
+    "vision": {
+      "title": "Vizyon Nou",
+      "description": "Nou vizyone yon Ayiti kote tout sitwayen gen aksè a enfòmasyon ki kredib, ak yon plas kote yo ka patisipe nan diskisyon ak analiz konstwiktif sou avni peyi nou an. Nou vle sèvi kòm yon pon ki konekte Ayisyen yo sou tè natal la ak sa yo ki nan dyaspora a, k ap ede kenbe kilti nou an vivan epi ankouraje echanj lide atravè fwontyè yo."
+    },
+    "team": {
+      "title": "Ekip Nou",
+      "description": "Ayiti Nouvèl fèt ak yon ekip divès jounalis, ekriven, ak tekniyen ki gen pasyon pou Ayiti ak kwayans nan pouvwa enfòmasyon. Ekip nou an gen ekspètiz nan yon pakèt domèn, soti nan politik ak ekonomi rive nan kilti ak espò, sa ki pèmèt nou bay yon kouvèti konplè nan nouvèl ak analiz konsènan Ayiti."
+    },
+    "contactUs": {
+      "title": "Kontakte Nou",
+      "description": "Èske ou gen kesyon, sijesyon, oswa ou ta renmen pataje yon istwa? Nou ta renmen tande ou!",
+      "button": "Kontakte Nou"
+    }
   }
 }

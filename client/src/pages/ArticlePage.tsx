@@ -1,199 +1,152 @@
-import { useEffect } from 'react';
-import { useRoute, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
-import { Article, Category } from '@shared/schema';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import { useLang } from '@/contexts/LangContext';
-import { FullPageLoading } from '@/components/ui/loading';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "wouter";
+import { Article, Category } from "@shared/schema";
+import { Skeleton } from "@/components/ui/skeleton";
+import ArticleCard from "@/components/articles/ArticleCard";
+import Sidebar from "@/components/layout/Sidebar";
+import { formatDistanceToNow } from "date-fns";
+import { enUS, fr, frCA } from "date-fns/locale";
 
-const ArticlePage = () => {
-  const { t } = useTranslation();
-  const { getLocalizedContent } = useLang();
-  const [match, params] = useRoute('/article/:slug');
+const getLocale = (langCode: string) => {
+  switch (langCode) {
+    case 'fr': return fr;
+    case 'en': return enUS;
+    default: return frCA; // Closest to Haitian Creole
+  }
+};
+
+export default function ArticlePage() {
+  const { t, i18n } = useTranslation();
+  const { slug } = useParams();
+  const langCode = t('languageCode');
   
-  const slug = params?.slug || '';
-
-  // Get article data
-  const { data: article, isLoading: isArticleLoading, error } = useQuery<Article>({
+  const { data: article, isLoading } = useQuery<Article>({
     queryKey: [`/api/articles/${slug}`],
-    enabled: !!slug,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
+  
+  const { data: category } = useQuery<Category>({
+    queryKey: [`/api/categories/${article?.category_id}`],
+    enabled: !!article?.category_id,
+    staleTime: 60 * 60 * 1000, // 1 hour
   });
-
-  const { data: relatedArticles = [] } = useQuery<Article[]>({
-    queryKey: ['/api/articles', { limit: 3 }],
-    enabled: !!article,
+  
+  const { data: relatedArticles } = useQuery<Article[]>({
+    queryKey: [`/api/articles/related/${article?.id}`, { limit: 3 }],
+    enabled: !!article?.id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  useEffect(() => {
-    // Scroll to top when page loads
-    window.scrollTo(0, 0);
-  }, [slug]);
-
-  if (isArticleLoading) {
-    return <FullPageLoading text={t('article.loading')} />;
-  }
-
-  if (error || !article) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('article.notFound')}</h1>
-          <p className="mb-8">{t('article.notFoundDesc')}</p>
-          <Button asChild>
-            <Link href="/">{t('common.backToHome')}</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const categoryName = (() => {
-    const category = categories.find(c => c.id === article.categoryId);
-    return category ? getLocalizedContent(category) : '';
-  })();
-
-  const formattedDate = article.publishedAt 
-    ? format(new Date(article.publishedAt), 'd MMMM yyyy')
-    : '';
+  
+  // Format relative date based on current language
+  const formatDate = (date: Date | string) => {
+    if (!date) return "";
+    const locale = getLocale(i18n.language || 'ht');
+    
+    return formatDistanceToNow(new Date(date), {
+      addSuffix: true,
+      locale
+    });
+  };
 
   return (
-    <div className="bg-white">
-      {/* Article Header */}
-      <div className="bg-[#00209F] text-white py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <Link href={`/category/${categories.find(c => c.id === article.categoryId)?.slug || ''}`} className="inline-block px-3 py-1 bg-[#D42E12] text-white text-sm font-semibold rounded-full">
-              {categoryName}
-            </Link>
-          </div>
-          
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-6">
-            {getLocalizedContent(article)}
-          </h1>
-          
-          <div className="flex flex-wrap items-center text-sm text-gray-200 mb-6">
-            <span>{formattedDate}</span>
-            <span className="mx-2">•</span>
-            <span>{t('article.by')} Jean-Robert Louis</span>
-            <span className="mx-2">•</span>
-            <span>15 {t('article.minRead')}</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Article Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Featured Image */}
-        {article.imageUrl && (
-          <div className="mb-8 rounded-lg overflow-hidden shadow-md">
-            <img 
-              src={article.imageUrl} 
-              alt={getLocalizedContent(article) as string} 
-              className="w-full h-auto"
-            />
-          </div>
-        )}
-        
-        {/* Article Body */}
-        <div className="prose prose-lg max-w-none mb-12">
-          <div dangerouslySetInnerHTML={{ __html: getLocalizedContent(article) as string }} />
-        </div>
-        
-        {/* Tags */}
-        <div className="border-t border-b py-6 my-8">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm font-medium text-gray-700">Tags:</span>
-            <Link href={`/category/${categories.find(c => c.id === article.categoryId)?.slug || ''}`} className="px-3 py-1 bg-gray-100 text-sm rounded-full hover:bg-gray-200">
-              {categoryName}
-            </Link>
-            <Link href="/tag/haiti" className="px-3 py-1 bg-gray-100 text-sm rounded-full hover:bg-gray-200">
-              Haiti
-            </Link>
-            <Link href="/tag/news" className="px-3 py-1 bg-gray-100 text-sm rounded-full hover:bg-gray-200">
-              News
-            </Link>
-          </div>
-        </div>
-        
-        {/* Author Info */}
-        <div className="bg-gray-50 p-6 rounded-lg mb-12">
-          <div className="flex items-start">
-            <img 
-              src="https://i.pravatar.cc/64?img=12" 
-              alt="Author" 
-              className="w-16 h-16 rounded-full mr-4"
-            />
-            <div>
-              <h3 className="font-heading font-bold text-xl mb-2">Jean-Robert Louis</h3>
-              <p className="text-gray-600 mb-4">{t('article.authorBio')}</p>
-              <div className="flex space-x-3">
-                <a href="#" className="text-gray-500 hover:text-[#00209F]">
-                  <i className="fab fa-twitter"></i>
-                </a>
-                <a href="#" className="text-gray-500 hover:text-[#00209F]">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" className="text-gray-500 hover:text-[#00209F]">
-                  <i className="fab fa-linkedin-in"></i>
-                </a>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-2/3">
+          {isLoading ? (
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <Skeleton className="w-full h-64 md:h-80" />
+              <div className="p-6">
+                <Skeleton className="h-8 w-3/4 mb-4" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-2/3 mb-4" />
               </div>
             </div>
-          </div>
-        </div>
-        
-        {/* Related Articles */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-heading font-bold text-[#00209F] mb-6">{t('article.relatedArticles')}</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedArticles.filter(a => a.id !== article.id).slice(0, 3).map(relatedArticle => (
-              <Link key={relatedArticle.id} href={`/article/${relatedArticle.slug}`}>
-                <div className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
-                  {relatedArticle.imageUrl ? (
-                    <img 
-                      src={relatedArticle.imageUrl} 
-                      alt={getLocalizedContent(relatedArticle) as string} 
-                      className="w-full h-40 object-cover"
-                    />
-                  ) : (
-                    <img 
-                      src={`https://source.unsplash.com/random/400x250?sig=${relatedArticle.id}`} 
-                      alt={getLocalizedContent(relatedArticle) as string} 
-                      className="w-full h-40 object-cover"
-                    />
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-heading font-bold text-lg mb-2 line-clamp-2">
-                      {getLocalizedContent(relatedArticle)}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {relatedArticle.publishedAt 
-                        ? format(new Date(relatedArticle.publishedAt), 'd MMM yyyy')
-                        : ''}
-                    </p>
+          ) : article ? (
+            <article className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img 
+                src={article.image_url} 
+                alt={article[`title_${langCode}` as keyof Article] as string} 
+                className="w-full h-64 md:h-80 object-cover"
+              />
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="bg-[#0D47A1] text-white text-xs px-2 py-1 rounded-sm">
+                    {category ? category[`name_${langCode}` as keyof Category] : t(`categories.${article.category_id}`)}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {formatDate(article.published_at)} • {article.read_time} {t('common.min')}
+                  </span>
+                </div>
+                
+                <h1 className="text-3xl font-serif font-bold mb-4">
+                  {article[`title_${langCode}` as keyof Article] as string}
+                </h1>
+                
+                <div className="flex items-center mb-6">
+                  <img 
+                    src={`https://randomuser.me/api/portraits/${article.id % 2 === 0 ? 'men' : 'women'}/${article.id % 100}.jpg`} 
+                    alt="Author" 
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <div>
+                    <p className="font-semibold">Author Name</p>
+                    <p className="text-sm text-gray-500">{t(`authorRoles.${article.category_id}`)}</p>
                   </div>
                 </div>
-              </Link>
-            ))}
-          </div>
+                
+                <div className="prose max-w-none">
+                  {(article[`content_${langCode}` as keyof Article] as string)
+                    .split('\n')
+                    .map((paragraph, index) => (
+                      <p key={index} className="mb-4">{paragraph}</p>
+                    ))
+                  }
+                </div>
+                
+                {article.tags && article.tags.length > 0 && (
+                  <div className="mt-8 pt-4 border-t">
+                    <h3 className="font-semibold mb-2">{t('article.tags')}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {article.tags.map((tag) => (
+                        <a 
+                          key={tag} 
+                          href={`/tag/${tag}`} 
+                          className="px-3 py-1 bg-gray-100 hover:bg-[#0D47A1] hover:text-white rounded-full text-sm transition"
+                        >
+                          {tag}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </article>
+          ) : (
+            <div className="bg-white rounded-lg shadow-md p-6 text-center">
+              <h1 className="text-2xl font-serif font-bold mb-2">{t('article.notFound.title')}</h1>
+              <p>{t('article.notFound.description')}</p>
+            </div>
+          )}
+          
+          {/* Related Articles */}
+          {relatedArticles && relatedArticles.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-2xl font-serif font-bold text-[#0D47A1] mb-4">{t('article.relatedArticles')}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedArticles.map((relatedArticle) => (
+                  <ArticleCard key={relatedArticle.id} article={relatedArticle} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         
-        {/* Back to Home */}
-        <div className="text-center">
-          <Button asChild>
-            <Link href="/">{t('common.backToHome')}</Link>
-          </Button>
-        </div>
+        <Sidebar />
       </div>
     </div>
   );
-};
-
-export default ArticlePage;
+}

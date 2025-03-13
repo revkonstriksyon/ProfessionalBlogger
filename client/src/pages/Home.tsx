@@ -1,41 +1,35 @@
-import React from 'react';
-import HeroSection from '@/components/home/HeroSection';
-import FeaturedArticles from '@/components/home/FeaturedArticles';
-import LatestNews from '@/components/home/LatestNews';
-import MediaSection from '@/components/home/MediaSection';
-import BlogSection from '@/components/home/BlogSection';
-import PopularPosts from '@/components/sidebar/PopularPosts';
-import Newsletter from '@/components/sidebar/Newsletter';
-import PollWidget from '@/components/sidebar/PollWidget';
-import TagsWidget from '@/components/sidebar/TagsWidget';
-import SocialMedia from '@/components/sidebar/SocialMedia';
+import { useTranslation } from "react-i18next";
+import HeroSection from "@/components/home/HeroSection";
+import FeaturedNews from "@/components/home/FeaturedNews";
+import BlogAnalysis from "@/components/home/BlogAnalysis";
+import MediaSection from "@/components/home/MediaSection";
+import ContactSection from "@/components/contact/ContactSection";
+import Sidebar from "@/components/layout/Sidebar";
 
-const Home: React.FC = () => {
+export default function Home() {
+  const { t } = useTranslation();
+  
   return (
     <>
       <HeroSection />
       
-      <main className="container mx-auto px-4 py-8">
-        <FeaturedArticles />
+      <div className="container mx-auto px-4 py-8">
+        <FeaturedNews />
         
-        <div className="md:flex md:space-x-6">
-          <div className="md:w-2/3">
-            <LatestNews />
+        {/* Two Column Layout */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content */}
+          <div className="w-full lg:w-2/3">
+            <BlogAnalysis />
             <MediaSection />
-            <BlogSection />
           </div>
           
-          <div className="md:w-1/3 space-y-8">
-            <PopularPosts />
-            <Newsletter />
-            <PollWidget />
-            <TagsWidget />
-            <SocialMedia />
-          </div>
+          {/* Sidebar */}
+          <Sidebar />
         </div>
-      </main>
+      </div>
+      
+      <ContactSection />
     </>
   );
-};
-
-export default Home;
+}

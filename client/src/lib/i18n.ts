@@ -1,28 +1,41 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import htTranslation from '../locales/ht.json';
-import frTranslation from '../locales/fr.json';
-import enTranslation from '../locales/en.json';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Initialize i18next
+// Import translations
+import translationHT from '../locales/ht.json';
+import translationFR from '../locales/fr.json';
+import translationEN from '../locales/en.json';
+
+// the translations
+const resources = {
+  ht: {
+    translation: translationHT
+  },
+  fr: {
+    translation: translationFR
+  },
+  en: {
+    translation: translationEN
+  }
+};
+
 i18n
+  // detect user language
+  .use(LanguageDetector)
+  // pass the i18n instance to react-i18next
   .use(initReactI18next)
+  // init i18next
   .init({
-    resources: {
-      ht: {
-        translation: htTranslation
-      },
-      fr: {
-        translation: frTranslation
-      },
-      en: {
-        translation: enTranslation
-      }
-    },
-    lng: localStorage.getItem('language') || 'ht', // Default language
+    resources,
     fallbackLng: 'ht',
+    debug: false,
     interpolation: {
-      escapeValue: false // React already safes from XSS
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
     }
   });
 

@@ -1,92 +1,78 @@
+import { useTranslation } from 'react-i18next';
+import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Article } from '@shared/schema';
-import { Link } from 'wouter';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import { useLang } from '@/contexts/LangContext';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const HeroSection = () => {
+export default function HeroSection() {
   const { t } = useTranslation();
-  const { getLocalizedContent } = useLang();
-
+  
   const { data: featuredArticles, isLoading } = useQuery<Article[]>({
-    queryKey: ['/api/articles/featured'],
+    queryKey: ['/api/articles/featured', 1],
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  if (isLoading) {
-    return (
-      <section className="bg-[#00209F] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <Skeleton className="inline-block h-8 w-24 bg-white/20 rounded-full mb-4" />
-              <Skeleton className="h-14 w-full bg-white/20 mb-3" />
-              <Skeleton className="h-14 w-3/4 bg-white/20 mb-4" />
-              <Skeleton className="h-6 w-full bg-white/20 mb-4" />
-              <Skeleton className="h-6 w-5/6 bg-white/20 mb-6" />
-              <Skeleton className="h-4 w-40 bg-white/20 mb-6" />
-              <Skeleton className="inline-block h-12 w-32 bg-white/20 rounded-lg" />
-            </div>
-            <Skeleton className="h-80 w-full bg-white/20 rounded-lg" />
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!featuredArticles || featuredArticles.length === 0) {
-    return null;
-  }
-
-  const heroArticle = featuredArticles[0];
-  const categoryName = "AKTUALITE"; // This would come from the category object in a real app
-  const formattedDate = heroArticle.publishedAt 
-    ? format(new Date(heroArticle.publishedAt), 'd MMM yyyy')
-    : '';
+  const mainFeaturedArticle = featuredArticles && featuredArticles.length > 0 ? featuredArticles[0] : null;
 
   return (
-    <section className="bg-[#00209F] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <span className="inline-block px-3 py-1 bg-[#D42E12] text-white text-sm font-semibold rounded-full mb-4">
-              {categoryName}
-            </span>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
-              {getLocalizedContent(heroArticle)}
+    <section className="bg-gradient-to-r from-[#0D47A1] to-primary-700 text-white py-12 md:py-20">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+            <h1 className="text-3xl md:text-5xl font-serif font-bold mb-4">
+              {t('hero.title')}
             </h1>
-            <p className="text-lg mb-6 text-gray-100">
-              {heroArticle.excerpt}
+            <p className="text-lg md:text-xl mb-6">
+              {t('hero.subtitle')}
             </p>
-            <div className="flex items-center text-sm text-gray-200">
-              <span>{formattedDate}</span>
-              <span className="mx-2">•</span>
-              <span>{t('article.by')} Jean-Robert Louis</span>
+            <div className="flex space-x-4">
+              <Link href="/category/news">
+                <a className="bg-[#FFC107] hover:bg-[#FFECB3] transition text-[#0D47A1] font-semibold px-6 py-3 rounded-md">
+                  {t('hero.latestNewsButton')}
+                </a>
+              </Link>
+              <Link href="/subscribe">
+                <a className="bg-white bg-opacity-20 hover:bg-opacity-30 transition px-6 py-3 rounded-md">
+                  {t('hero.subscribeButton')}
+                </a>
+              </Link>
             </div>
-            <Link href={`/article/${heroArticle.slug}`} className="inline-block mt-6 px-6 py-3 bg-[#FFCC00] text-[#00209F] font-semibold rounded-lg hover:bg-opacity-90 transition">
-              {t('common.readMore')}
-            </Link>
           </div>
-          <div className="rounded-lg overflow-hidden shadow-lg">
-            {heroArticle.imageUrl ? (
-              <img 
-                src={heroArticle.imageUrl} 
-                alt={getLocalizedContent(heroArticle) as string} 
-                className="w-full h-full object-cover"
-              />
+          <div className="w-full md:w-1/2">
+            {isLoading ? (
+              <div className="relative rounded-lg overflow-hidden shadow-xl">
+                <Skeleton className="w-full h-64 md:h-80" />
+              </div>
+            ) : mainFeaturedArticle ? (
+              <div className="relative rounded-lg overflow-hidden shadow-xl">
+                <img 
+                  src={mainFeaturedArticle.image_url} 
+                  alt={mainFeaturedArticle[`title_${t('languageCode')}` as keyof Article] as string} 
+                  className="w-full h-64 md:h-80 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                  <div className="p-6">
+                    <span className="bg-[#D32F2F] text-white text-xs px-2 py-1 rounded-sm">
+                      {t(`categories.${mainFeaturedArticle.category_id}`)}
+                    </span>
+                    <Link href={`/article/${mainFeaturedArticle.slug}`}>
+                      <a className="block">
+                        <h3 className="text-white text-xl md:text-2xl font-serif font-bold mt-2">
+                          {mainFeaturedArticle[`title_${t('languageCode')}` as keyof Article] as string}
+                        </h3>
+                      </a>
+                    </Link>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <img 
-                src="https://images.unsplash.com/photo-1590846434581-8d5992257745?auto=format&fit=crop&q=80&w=800&h=500" 
-                alt={getLocalizedContent(heroArticle) as string}
-                className="w-full h-full object-cover"
-              />
+              <div className="relative rounded-lg overflow-hidden shadow-xl bg-gray-800 flex items-center justify-center h-64 md:h-80">
+                <p className="text-white text-lg">{t('common.noArticlesFound')}</p>
+              </div>
             )}
           </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}

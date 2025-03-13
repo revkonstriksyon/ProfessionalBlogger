@@ -1,0 +1,224 @@
+{
+  "languageCode": "fr",
+  "siteName": "Ayiti Nouvèl",
+  "nav": {
+    "home": "ACCUEIL",
+    "media": "MÉDIA",
+    "blog": "BLOG",
+    "contact": "CONTACT",
+    "about": "À PROPOS",
+    "privacy": "CONFIDENTIALITÉ",
+    "terms": "CONDITIONS",
+    "sitemap": "PLAN DU SITE"
+  },
+  "categories": {
+    "news": "ACTUALITÉS",
+    "politics": "POLITIQUE",
+    "culture": "CULTURE",
+    "sports": "SPORTS",
+    "education": "ÉDUCATION",
+    "health": "SANTÉ",
+    "technology": "TECHNOLOGIE",
+    "1": "ACTUALITÉS",
+    "2": "POLITIQUE",
+    "3": "CULTURE",
+    "4": "SPORTS",
+    "5": "ÉDUCATION",
+    "6": "SANTÉ",
+    "7": "TECHNOLOGIE"
+  },
+  "authorRoles": {
+    "1": "Journaliste",
+    "2": "Analyste Politique",
+    "3": "Écrivain Culturel",
+    "4": "Chroniqueur Sportif",
+    "5": "Expert en Éducation",
+    "6": "Spécialiste de la Santé",
+    "7": "Expert en Technologie"
+  },
+  "hero": {
+    "title": "Bienvenue sur Ayiti Nouvèl",
+    "subtitle": "Un blog moderne et professionnel couvrant tous les sujets liés à Haïti.",
+    "latestNewsButton": "Dernières Nouvelles",
+    "subscribeButton": "S'abonner"
+  },
+  "featuredNews": {
+    "title": "Dernières Nouvelles"
+  },
+  "blogAnalysis": {
+    "title": "Blog et Analyse"
+  },
+  "common": {
+    "viewAll": "VOIR TOUT",
+    "min": "min",
+    "read": "lecture",
+    "noArticlesFound": "Aucun article disponible pour le moment.",
+    "submitting": "Soumission en cours...",
+    "categoryNotFound": "Catégorie non trouvée",
+    "loading": "Chargement..."
+  },
+  "media": {
+    "title": "Média",
+    "pageTitle": "Média",
+    "pageDescription": "Photos, Vidéos et Podcasts en relation avec Haïti",
+    "noItemsFound": "Aucun élément média disponible pour le moment.",
+    "audioNotSupported": "Votre navigateur ne prend pas en charge l'élément audio.",
+    "viewMore": {
+      "photo": "Voir Plus de Photos",
+      "video": "Voir Plus de Vidéos",
+      "podcast": "Voir Plus de Podcasts"
+    }
+  },
+  "mediaType": {
+    "photo": "Photos",
+    "video": "Vidéos",
+    "podcast": "Podcasts"
+  },
+  "poll": {
+    "title": "Sondage du Jour",
+    "voteButton": "Voter",
+    "noPollAvailable": "Aucun sondage disponible pour le moment.",
+    "totalVotes": "{{count}} réponses",
+    "resultsDisclaimer": "Les résultats seront publiés dans les 24 heures. Merci de votre participation!",
+    "success": {
+      "title": "Réponse Enregistrée",
+      "description": "Merci de votre participation à ce sondage!"
+    },
+    "error": {
+      "title": "Erreur",
+      "description": "Une erreur s'est produite lors de la soumission de votre réponse. Veuillez réessayer."
+    },
+    "selectOption": {
+      "title": "Sélection Requise",
+      "description": "Veuillez choisir une option avant de voter."
+    }
+  },
+  "subscription": {
+    "title": "S'abonner",
+    "description": "Recevez les dernières nouvelles et articles directement dans votre boîte mail.",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "Votre email",
+    "frequencyPlaceholder": "Choisir une fréquence",
+    "buttonText": "S'abonner",
+    "success": {
+      "title": "Abonnement Réussi!",
+      "description": "Vous recevrez désormais nos dernières nouvelles dans votre email."
+    },
+    "error": {
+      "title": "Erreur",
+      "description": "Une erreur s'est produite lors du traitement de votre abonnement. Veuillez réessayer."
+    },
+    "frequency": {
+      "daily": "Quotidien",
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel"
+    }
+  },
+  "popularArticles": {
+    "title": "Articles Populaires"
+  },
+  "tags": {
+    "title": "Mots-clés",
+    "politics": "Politique",
+    "economy": "Économie",
+    "culture": "Culture",
+    "sports": "Sports",
+    "agriculture": "Agriculture",
+    "tourism": "Tourisme",
+    "education": "Éducation",
+    "health": "Santé",
+    "technology": "Technologie",
+    "diaspora": "Diaspora"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "pageTitle": "Contactez-nous",
+    "pageDescription": "Envoyez-nous un message ou une suggestion",
+    "description": "Nous aimerions connaître votre opinion ou vos suggestions. Envoyez-nous un message.",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "submit": "Envoyer le Message"
+    },
+    "info": {
+      "title": "Informations de Contact",
+      "address": {
+        "title": "Adresse",
+        "value": "123 Rue Capois, Port-au-Prince, Haïti"
+      },
+      "email": {
+        "title": "Email",
+        "value": "contact@ayitinouvel.com"
+      },
+      "phone": {
+        "title": "Téléphone",
+        "value": "+509 1234 5678"
+      }
+    },
+    "social": {
+      "title": "Suivez-nous"
+    },
+    "success": {
+      "title": "Message Envoyé!",
+      "description": "Merci pour votre message. Nous vous contacterons bientôt."
+    },
+    "error": {
+      "title": "Erreur",
+      "description": "Une erreur s'est produite lors de l'envoi de votre message. Veuillez réessayer."
+    }
+  },
+  "footer": {
+    "description": "Un blog moderne et professionnel couvrant tous les sujets liés à Haïti.",
+    "categories": "Catégories",
+    "quickLinks": "Liens Rapides",
+    "subscription": "Abonnement",
+    "subscriptionDescription": "Entrez votre email pour recevoir des notifications sur nos derniers articles.",
+    "emailPlaceholder": "Votre email",
+    "subscribe": "S'abonner",
+    "copyright": "Tous droits réservés."
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Entrez les termes de recherche...",
+    "button": "Rechercher",
+    "resultsFor": "Résultats pour \"{{query}}\"",
+    "resultsCount": "{{count}} articles trouvés",
+    "noResults": "Aucun article trouvé pour \"{{query}}\"",
+    "enterQuery": "Entrez un terme de recherche",
+    "instructions": "Tapez un mot ou une phrase que vous souhaitez rechercher et appuyez sur le bouton Rechercher."
+  },
+  "article": {
+    "tags": "Mots-clés",
+    "relatedArticles": "Articles Connexes",
+    "notFound": {
+      "title": "Article non trouvé",
+      "description": "L'article que vous recherchez n'est pas disponible ou n'existe plus."
+    }
+  },
+  "category": {
+    "description": "Tous les derniers articles dans cette catégorie."
+  },
+  "about": {
+    "pageTitle": "À Propos",
+    "pageDescription": "En savoir plus sur notre mission et notre équipe",
+    "mission": {
+      "title": "Notre Mission",
+      "description": "La mission d'Ayiti Nouvèl est de fournir des informations crédibles et inclusives sur tous les aspects de la vie en Haïti et de sa diaspora. Nous croyons qu'une population bien informée peut prendre des décisions éclairées pour le bénéfice de la société. Nous nous engageons à créer une plateforme où toutes les voix haïtiennes peuvent être entendues, quelle que soit leur origine sociale, leurs croyances ou leurs opinions politiques."
+    },
+    "vision": {
+      "title": "Notre Vision",
+      "description": "Nous envisageons une Haïti où tous les citoyens ont accès à des informations crédibles, et un lieu où ils peuvent participer à des discussions et analyses constructives sur l'avenir de notre pays. Nous voulons servir de pont reliant les Haïtiens sur le sol natal et ceux de la diaspora, aidant à maintenir notre culture vivante et encourageant l'échange d'idées à travers les frontières."
+    },
+    "team": {
+      "title": "Notre Équipe",
+      "description": "Ayiti Nouvèl est composé d'une équipe diverse de journalistes, écrivains et techniciens passionnés par Haïti et croyant au pouvoir de l'information. Notre équipe possède une expertise dans une variété de domaines, allant de la politique et de l'économie à la culture et au sport, nous permettant de fournir une couverture complète des nouvelles et analyses concernant Haïti."
+    },
+    "contactUs": {
+      "title": "Contactez-nous",
+      "description": "Vous avez des questions, des suggestions ou souhaitez partager une histoire? Nous aimerions vous entendre!",
+      "button": "Contactez-nous"
+    }
+  }
+}

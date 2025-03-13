@@ -1,162 +1,72 @@
-import { useEffect } from 'react';
-import { useRoute, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
-import { Article, Category } from '@shared/schema';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import { useLang } from '@/contexts/LangContext';
-import { FullPageLoading } from '@/components/ui/loading';
-import { Button } from '@/components/ui/button';
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "wouter";
+import { Article, Category } from "@shared/schema";
+import ArticleCard from "@/components/articles/ArticleCard";
+import Sidebar from "@/components/layout/Sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const CategoryPage = () => {
+export default function CategoryPage() {
   const { t } = useTranslation();
-  const { getLocalizedContent } = useLang();
-  const [match, params] = useRoute('/category/:slug');
+  const { slug } = useParams();
+  const langCode = t('languageCode');
   
-  const slug = params?.slug || '';
-
-  // Get category data
-  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
+  const { data: category, isLoading: isCategoryLoading } = useQuery<Category>({
+    queryKey: [`/api/categories/${slug}`],
+    staleTime: 60 * 60 * 1000, // 1 hour
   });
-
-  const category = categories.find(c => c.slug === slug);
-
-  // Get articles for this category
-  const { data: articles = [], isLoading: isArticlesLoading } = useQuery<Article[]>({
-    queryKey: [`/api/articles/category/${category?.id}`],
+  
+  const { data: articles, isLoading: isArticlesLoading } = useQuery<Article[]>({
+    queryKey: [`/api/articles/category/${category?.id}`, { limit: 12 }],
     enabled: !!category?.id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  useEffect(() => {
-    // Scroll to top when page loads
-    window.scrollTo(0, 0);
-  }, [slug]);
-
-  if (isCategoriesLoading || isArticlesLoading) {
-    return <FullPageLoading text={t('category.loading')} />;
-  }
-
-  if (!category) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('category.notFound')}</h1>
-          <p className="mb-8">{t('category.notFoundDesc')}</p>
-          <Button asChild>
-            <Link href="/">{t('common.backToHome')}</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white">
-      {/* Category Header */}
-      <div className="bg-[#00209F] text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div 
-            className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4"
-            style={{ 
-              backgroundColor: `${category.color}20`,
-              color: '#fff'
-            }}
-          >
-            <i className={`fas fa-${category.icon} fa-lg`}></i>
-          </div>
-          
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
-            {getLocalizedContent(category)}
-          </h1>
-          
-          <p className="max-w-2xl mx-auto text-lg text-gray-200">
-            {t('category.description', { category: getLocalizedContent(category) })}
-          </p>
-        </div>
-      </div>
-      
-      {/* Articles List */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {articles.length === 0 ? (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-medium text-gray-600 mb-4">{t('category.noArticles')}</h2>
-            <p className="mb-8 text-gray-500">{t('category.noArticlesDesc')}</p>
-            <Button asChild>
-              <Link href="/">{t('common.backToHome')}</Link>
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map(article => (
-              <article key={article.id} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-white">
-                <div className="relative h-48">
-                  {article.imageUrl ? (
-                    <img 
-                      src={article.imageUrl} 
-                      alt={getLocalizedContent(article) as string} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img 
-                      src={`https://source.unsplash.com/random/400x250?sig=${article.id}`}
-                      alt={getLocalizedContent(article) as string}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-30"></div>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-heading font-bold text-xl mb-3 line-clamp-2 hover:text-[#D42E12] transition">
-                    {getLocalizedContent(article)}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">
-                      {article.publishedAt 
-                        ? format(new Date(article.publishedAt), 'd MMM yyyy')
-                        : ''}
-                    </span>
-                    <Link href={`/article/${article.slug}`} className="text-[#00209F] font-medium hover:text-[#D42E12]">
-                      {t('common.readMore')}
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      {/* Categories Link */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 text-center">
-        <h2 className="text-2xl font-heading font-bold text-[#00209F] mb-6">{t('category.otherCategories')}</h2>
-        
-        <div className="flex flex-wrap justify-center gap-4">
-          {categories.filter(c => c.id !== category.id).map(otherCategory => (
-            <Link 
-              key={otherCategory.id} 
-              href={`/category/${otherCategory.slug}`}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
-            >
-              <div 
-                className="w-6 h-6 rounded-full flex items-center justify-center mr-2"
-                style={{ 
-                  backgroundColor: otherCategory.color,
-                  color: '#fff'
-                }}
-              >
-                <i className={`fas fa-${otherCategory.icon} fa-xs`}></i>
-              </div>
-              <span className="font-medium">{getLocalizedContent(otherCategory)}</span>
-            </Link>
-          ))}
+  
+  const isLoading = isCategoryLoading || isArticlesLoading;
+  
+  // Create skeletons for loading state
+  const skeletons = Array(6).fill(0).map((_, i) => (
+    <div key={`skeleton-${i}`} className="bg-white rounded-lg overflow-hidden shadow-md">
+      <Skeleton className="w-full h-48" />
+      <div className="p-4">
+        <Skeleton className="h-6 w-3/4 mb-2" />
+        <Skeleton className="h-4 w-full mb-3" />
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-3 w-1/4" />
+          <Skeleton className="h-3 w-1/4" />
         </div>
       </div>
     </div>
-  );
-};
+  ));
 
-export default CategoryPage;
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-serif font-bold text-[#0D47A1] mb-2">
+          {isCategoryLoading 
+            ? <Skeleton className="h-9 w-1/4" /> 
+            : category ? category[`name_${langCode}` as keyof Category] : t('common.categoryNotFound')
+          }
+        </h1>
+        <p className="text-gray-600">{t('category.description')}</p>
+      </div>
+      
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-2/3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {isLoading 
+              ? skeletons
+              : articles && articles.length > 0
+                ? articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))
+                : <p className="col-span-2 text-center py-8">{t('common.noArticlesFound')}</p>
+            }
+          </div>
+        </div>
+        
+        <Sidebar />
+      </div>
+    </div>
+  );
+}

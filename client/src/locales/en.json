@@ -1,0 +1,224 @@
+{
+  "languageCode": "en",
+  "siteName": "Ayiti Nouvèl",
+  "nav": {
+    "home": "HOME",
+    "media": "MEDIA",
+    "blog": "BLOG",
+    "contact": "CONTACT",
+    "about": "ABOUT",
+    "privacy": "PRIVACY",
+    "terms": "TERMS",
+    "sitemap": "SITEMAP"
+  },
+  "categories": {
+    "news": "NEWS",
+    "politics": "POLITICS",
+    "culture": "CULTURE",
+    "sports": "SPORTS",
+    "education": "EDUCATION",
+    "health": "HEALTH",
+    "technology": "TECHNOLOGY",
+    "1": "NEWS",
+    "2": "POLITICS",
+    "3": "CULTURE",
+    "4": "SPORTS",
+    "5": "EDUCATION",
+    "6": "HEALTH",
+    "7": "TECHNOLOGY"
+  },
+  "authorRoles": {
+    "1": "Journalist",
+    "2": "Political Analyst",
+    "3": "Cultural Writer",
+    "4": "Sports Columnist",
+    "5": "Education Expert",
+    "6": "Health Specialist",
+    "7": "Technology Expert"
+  },
+  "hero": {
+    "title": "Welcome to Ayiti Nouvèl",
+    "subtitle": "A modern and professional blog covering all topics related to Haiti.",
+    "latestNewsButton": "Latest News",
+    "subscribeButton": "Subscribe"
+  },
+  "featuredNews": {
+    "title": "Latest News"
+  },
+  "blogAnalysis": {
+    "title": "Blog and Analysis"
+  },
+  "common": {
+    "viewAll": "VIEW ALL",
+    "min": "min",
+    "read": "read",
+    "noArticlesFound": "No articles available at the moment.",
+    "submitting": "Submitting...",
+    "categoryNotFound": "Category not found",
+    "loading": "Loading..."
+  },
+  "media": {
+    "title": "Media",
+    "pageTitle": "Media",
+    "pageDescription": "Photos, Videos, and Podcasts related to Haiti",
+    "noItemsFound": "No media items available at the moment.",
+    "audioNotSupported": "Your browser does not support the audio element.",
+    "viewMore": {
+      "photo": "View More Photos",
+      "video": "View More Videos",
+      "podcast": "View More Podcasts"
+    }
+  },
+  "mediaType": {
+    "photo": "Photos",
+    "video": "Videos",
+    "podcast": "Podcasts"
+  },
+  "poll": {
+    "title": "Poll of the Day",
+    "voteButton": "Vote",
+    "noPollAvailable": "No poll available at the moment.",
+    "totalVotes": "{{count}} responses",
+    "resultsDisclaimer": "Results will be published within 24 hours. Thank you for your participation!",
+    "success": {
+      "title": "Response Recorded",
+      "description": "Thank you for participating in this poll!"
+    },
+    "error": {
+      "title": "Error",
+      "description": "There was an error submitting your response. Please try again."
+    },
+    "selectOption": {
+      "title": "Selection Required",
+      "description": "Please choose an option before voting."
+    }
+  },
+  "subscription": {
+    "title": "Subscribe",
+    "description": "Receive the latest news and articles directly in your inbox.",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Your email",
+    "frequencyPlaceholder": "Choose frequency",
+    "buttonText": "Subscribe",
+    "success": {
+      "title": "Subscription Successful!",
+      "description": "You will now receive our latest news in your email."
+    },
+    "error": {
+      "title": "Error",
+      "description": "There was an error processing your subscription. Please try again."
+    },
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    }
+  },
+  "popularArticles": {
+    "title": "Popular Articles"
+  },
+  "tags": {
+    "title": "Tags",
+    "politics": "Politics",
+    "economy": "Economy",
+    "culture": "Culture",
+    "sports": "Sports",
+    "agriculture": "Agriculture",
+    "tourism": "Tourism",
+    "education": "Education",
+    "health": "Health",
+    "technology": "Technology",
+    "diaspora": "Diaspora"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "pageTitle": "Contact Us",
+    "pageDescription": "Send us a message or suggestion",
+    "description": "We would love to hear your opinion or suggestions. Send us a message.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message"
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": {
+        "title": "Address",
+        "value": "123 Capois Street, Port-au-Prince, Haiti"
+      },
+      "email": {
+        "title": "Email",
+        "value": "contact@ayitinouvel.com"
+      },
+      "phone": {
+        "title": "Phone",
+        "value": "+509 1234 5678"
+      }
+    },
+    "social": {
+      "title": "Follow Us"
+    },
+    "success": {
+      "title": "Message Sent!",
+      "description": "Thank you for your message. We will contact you soon."
+    },
+    "error": {
+      "title": "Error",
+      "description": "There was an error sending your message. Please try again."
+    }
+  },
+  "footer": {
+    "description": "A modern and professional blog covering all topics related to Haiti.",
+    "categories": "Categories",
+    "quickLinks": "Quick Links",
+    "subscription": "Subscription",
+    "subscriptionDescription": "Enter your email to receive notifications about our latest articles.",
+    "emailPlaceholder": "Your email",
+    "subscribe": "Subscribe",
+    "copyright": "All rights reserved."
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Enter search terms...",
+    "button": "Search",
+    "resultsFor": "Results for \"{{query}}\"",
+    "resultsCount": "{{count}} articles found",
+    "noResults": "No articles found for \"{{query}}\"",
+    "enterQuery": "Enter a search term",
+    "instructions": "Type a word or phrase you want to search for and press the Search button."
+  },
+  "article": {
+    "tags": "Tags",
+    "relatedArticles": "Related Articles",
+    "notFound": {
+      "title": "Article not found",
+      "description": "The article you are looking for is not available or no longer exists."
+    }
+  },
+  "category": {
+    "description": "All the latest articles in this category."
+  },
+  "about": {
+    "pageTitle": "About Us",
+    "pageDescription": "Learn more about our mission and team",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Ayiti Nouvèl's mission is to provide credible and inclusive information about all aspects of life in Haiti and its diaspora. We believe that a well-informed population can make informed decisions for the benefit of society. We are committed to creating a platform where all Haitian voices can be heard, regardless of their social background, beliefs, or political opinions."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "We envision a Haiti where all citizens have access to credible information, and a place where they can participate in constructive discussions and analysis about the future of our country. We want to serve as a bridge connecting Haitians on the homeland and those in the diaspora, helping to keep our culture alive and encouraging the exchange of ideas across borders."
+    },
+    "team": {
+      "title": "Our Team",
+      "description": "Ayiti Nouvèl is made up of a diverse team of journalists, writers, and technicians who are passionate about Haiti and believe in the power of information. Our team has expertise in a variety of fields, from politics and economics to culture and sports, allowing us to provide comprehensive coverage of news and analysis concerning Haiti."
+    },
+    "contactUs": {
+      "title": "Contact Us",
+      "description": "Do you have questions, suggestions, or would like to share a story? We would love to hear from you!",
+      "button": "Contact Us"
+    }
+  }
+}

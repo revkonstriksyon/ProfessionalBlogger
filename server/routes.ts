@@ -1,170 +1,300 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertSubscriberSchema, insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
+import { 
+  insertSubscriptionSchema, 
+  insertContactMessageSchema,
+  insertPollResponseSchema 
+} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Categories
-  app.get("/api/categories", async (req: Request, res: Response) => {
+  const httpServer = createServer(app);
+
+  // API route prefix
+  const apiRouter = '/api';
+
+  // Categories endpoints
+  app.get(`${apiRouter}/categories`, async (_req: Request, res: Response) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching categories" });
+      res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
 
-  app.get("/api/categories/:slug", async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/categories/:slug`, async (req: Request, res: Response) => {
     try {
-      const category = await storage.getCategoryBySlug(req.params.slug);
+      const { slug } = req.params;
+      const category = await storage.getCategoryBySlug(slug);
+      
       if (!category) {
-        return res.status(404).json({ message: "Category not found" });
+        return res.status(404).json({ error: "Category not found" });
       }
+      
       res.json(category);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching category" });
+      res.status(500).json({ error: "Failed to fetch category" });
     }
   });
 
-  // Articles
-  app.get("/api/articles", async (req: Request, res: Response) => {
+  // Articles endpoints
+  app.get(`${apiRouter}/articles`, async (req: Request, res: Response) => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
-      const articles = await storage.getArticles(limit);
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const articles = await storage.getArticles(limit, offset);
       res.json(articles);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching articles" });
+      res.status(500).json({ error: "Failed to fetch articles" });
     }
   });
 
-  app.get("/api/articles/featured", async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/articles/featured`, async (req: Request, res: Response) => {
     try {
-      const featuredArticles = await storage.getFeaturedArticles();
-      res.json(featuredArticles);
+      const limit = parseInt(req.query.limit as string) || 3;
+      
+      const articles = await storage.getFeaturedArticles(limit);
+      res.json(articles);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching featured articles" });
+      res.status(500).json({ error: "Failed to fetch featured articles" });
     }
   });
 
-  app.get("/api/articles/category/:id", async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/articles/popular`, async (req: Request, res: Response) => {
     try {
-      const categoryId = parseInt(req.params.id);
+      const limit = parseInt(req.query.limit as string) || 3;
+      
+      const articles = await storage.getPopularArticles(limit);
+      res.json(articles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch popular articles" });
+    }
+  });
+
+  app.get(`${apiRouter}/articles/category/:categoryId`, async (req: Request, res: Response) => {
+    try {
+      const categoryId = parseInt(req.params.categoryId);
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
       if (isNaN(categoryId)) {
-        return res.status(400).json({ message: "Invalid category ID" });
+        return res.status(400).json({ error: "Invalid category ID" });
       }
-      const articles = await storage.getArticlesByCategory(categoryId);
+      
+      const articles = await storage.getArticlesByCategory(categoryId, limit, offset);
       res.json(articles);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching articles by category" });
+      res.status(500).json({ error: "Failed to fetch articles by category" });
     }
   });
 
-  app.get("/api/articles/:slug", async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/articles/related/:articleId`, async (req: Request, res: Response) => {
     try {
-      const article = await storage.getArticleBySlug(req.params.slug);
-      if (!article) {
-        return res.status(404).json({ message: "Article not found" });
+      const articleId = parseInt(req.params.articleId);
+      const limit = parseInt(req.query.limit as string) || 3;
+      
+      if (isNaN(articleId)) {
+        return res.status(400).json({ error: "Invalid article ID" });
       }
+      
+      const articles = await storage.getRelatedArticles(articleId, limit);
+      res.json(articles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch related articles" });
+    }
+  });
+
+  app.get(`${apiRouter}/articles/search`, async (req: Request, res: Response) => {
+    try {
+      const query = req.query.q as string;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      if (!query) {
+        return res.status(400).json({ error: "Search query is required" });
+      }
+      
+      const articles = await storage.searchArticles(query, limit, offset);
+      res.json(articles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to search articles" });
+    }
+  });
+
+  app.get(`${apiRouter}/articles/:slug`, async (req: Request, res: Response) => {
+    try {
+      const { slug } = req.params;
+      const article = await storage.getArticleBySlug(slug);
+      
+      if (!article) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      
       res.json(article);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching article" });
+      res.status(500).json({ error: "Failed to fetch article" });
     }
   });
 
-  // Media
-  app.get("/api/media/:type", async (req: Request, res: Response) => {
+  // Media endpoints
+  app.get(`${apiRouter}/media`, async (req: Request, res: Response) => {
     try {
-      const type = req.params.type;
-      if (!["photo", "video", "podcast"].includes(type)) {
-        return res.status(400).json({ message: "Invalid media type" });
-      }
-      const mediaItems = await storage.getMediaByType(type);
+      const type = req.query.type as string | undefined;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const mediaItems = await storage.getMedia(type, limit, offset);
       res.json(mediaItems);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching media" });
+      res.status(500).json({ error: "Failed to fetch media" });
     }
   });
 
-  // Polls
-  app.get("/api/polls/active", async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/media/:id`, async (req: Request, res: Response) => {
     try {
-      const activePolls = await storage.getActivePolls();
+      const id = parseInt(req.params.id);
       
-      if (activePolls.length === 0) {
-        return res.json({ poll: null, options: [] });
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid media ID" });
       }
       
-      const activePoll = activePolls[0]; // Get the first active poll
-      const pollWithOptions = await storage.getPollWithOptions(activePoll.id);
+      const mediaItem = await storage.getMediaById(id);
       
-      if (!pollWithOptions) {
-        return res.status(404).json({ message: "Poll not found" });
+      if (!mediaItem) {
+        return res.status(404).json({ error: "Media not found" });
       }
       
-      res.json(pollWithOptions);
+      res.json(mediaItem);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching active poll" });
+      res.status(500).json({ error: "Failed to fetch media" });
     }
   });
 
-  app.post("/api/polls/vote", async (req: Request, res: Response) => {
+  // Poll endpoints
+  app.get(`${apiRouter}/polls/active`, async (req: Request, res: Response) => {
     try {
-      const schema = z.object({
-        optionId: z.number()
+      const polls = await storage.getActivePolls();
+      res.json(polls);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch active polls" });
+    }
+  });
+
+  app.get(`${apiRouter}/polls/:id`, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid poll ID" });
+      }
+      
+      const poll = await storage.getPollById(id);
+      
+      if (!poll) {
+        return res.status(404).json({ error: "Poll not found" });
+      }
+      
+      res.json(poll);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch poll" });
+    }
+  });
+
+  app.get(`${apiRouter}/polls/:id/results`, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid poll ID" });
+      }
+      
+      const poll = await storage.getPollById(id);
+      
+      if (!poll) {
+        return res.status(404).json({ error: "Poll not found" });
+      }
+      
+      const results = await storage.getPollResults(id);
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch poll results" });
+    }
+  });
+
+  app.post(`${apiRouter}/polls/:id/vote`, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid poll ID" });
+      }
+      
+      const poll = await storage.getPollById(id);
+      
+      if (!poll) {
+        return res.status(404).json({ error: "Poll not found" });
+      }
+      
+      if (!poll.active || (poll.expires_at && new Date(poll.expires_at) < new Date())) {
+        return res.status(400).json({ error: "Poll is no longer active" });
+      }
+      
+      const validationResult = insertPollResponseSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ error: "Invalid poll response data", details: validationResult.error });
+      }
+      
+      // Get client IP address
+      const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '0.0.0.0';
+      
+      // Create poll response
+      const response = await storage.submitPollResponse({
+        ...validationResult.data,
+        poll_id: id,
+        ip_address: typeof ipAddress === 'string' ? ipAddress : ipAddress[0]
       });
       
-      const parsed = schema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ message: "Invalid option ID" });
-      }
-      
-      const { optionId } = parsed.data;
-      await storage.voteForOption(optionId);
-      
-      // Return the updated poll with options
-      const pollOptions = Array.from(await storage.getActivePolls());
-      if (pollOptions.length === 0) {
-        return res.status(404).json({ message: "No active polls found" });
-      }
-      
-      const updatedPollWithOptions = await storage.getPollWithOptions(pollOptions[0].id);
-      res.json(updatedPollWithOptions);
+      res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Error voting for poll option" });
+      res.status(500).json({ error: "Failed to submit poll response" });
     }
   });
 
-  // Subscribers
-  app.post("/api/subscribers", async (req: Request, res: Response) => {
+  // Subscription endpoints
+  app.post(`${apiRouter}/subscribe`, async (req: Request, res: Response) => {
     try {
-      const parsed = insertSubscriberSchema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ message: "Invalid subscriber data", errors: parsed.error.format() });
+      const validationResult = insertSubscriptionSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ error: "Invalid subscription data", details: validationResult.error });
       }
       
-      const newSubscriber = await storage.createSubscriber(parsed.data);
-      res.status(201).json(newSubscriber);
+      const subscription = await storage.createSubscription(validationResult.data);
+      res.status(201).json(subscription);
     } catch (error) {
-      res.status(500).json({ message: "Error creating subscriber" });
+      res.status(500).json({ error: "Failed to create subscription" });
     }
   });
 
-  // Contact Messages
-  app.post("/api/contact", async (req: Request, res: Response) => {
+  // Contact endpoints
+  app.post(`${apiRouter}/contact`, async (req: Request, res: Response) => {
     try {
-      const parsed = insertContactMessageSchema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ message: "Invalid message data", errors: parsed.error.format() });
+      const validationResult = insertContactMessageSchema.safeParse(req.body);
+      
+      if (!validationResult.success) {
+        return res.status(400).json({ error: "Invalid contact message data", details: validationResult.error });
       }
       
-      const newMessage = await storage.createContactMessage(parsed.data);
-      res.status(201).json(newMessage);
+      const contactMessage = await storage.createContactMessage(validationResult.data);
+      res.status(201).json(contactMessage);
     } catch (error) {
-      res.status(500).json({ message: "Error sending message" });
+      res.status(500).json({ error: "Failed to create contact message" });
     }
   });
 
-  const httpServer = createServer(app);
   return httpServer;
 }

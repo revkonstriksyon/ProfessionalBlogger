@@ -1,104 +1,69 @@
-import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { Category } from '@shared/schema';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Link } from 'wouter';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
 import { apiRequest } from '@/lib/queryClient';
-import { useLang } from '@/contexts/LangContext';
+import { useToast } from '@/hooks/use-toast';
+import { CATEGORIES, SOCIAL_LINKS } from '@/lib/constants';
 
-const Footer = () => {
+export default function Footer() {
   const { t } = useTranslation();
-  const { currentLang, changeLang } = useLang();
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
-  });
 
-  // Form schema for newsletter
-  const formSchema = z.object({
-    email: z.string().email(t('validation.emailRequired')),
-  });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-    },
-  });
-
-  // Newsletter subscription mutation
-  const subscribeMutation = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
-      return apiRequest('POST', '/api/subscribers', {
-        email: data.email,
-        name: data.email.split('@')[0], // Use part of email as name
-        preferredLanguage: currentLang,
+    try {
+      setIsSubmitting(true);
+      await apiRequest('POST', '/api/subscribe', {
+        email,
+        name: email.split('@')[0], // Simple default name from email
+        frequency: 'weekly',
+        language: localStorage.getItem('i18nextLng') || 'ht'
       });
-    },
-    onSuccess: () => {
+      
       toast({
-        title: t('newsletter.success'),
-        description: t('newsletter.successDesc'),
+        title: t('subscription.success.title'),
+        description: t('subscription.success.description'),
       });
-      form.reset();
-    },
-    onError: () => {
+      
+      setEmail('');
+    } catch (error) {
       toast({
-        title: t('newsletter.error'),
-        description: t('newsletter.errorDesc'),
-        variant: 'destructive',
+        title: t('subscription.error.title'),
+        description: t('subscription.error.description'),
+        variant: 'destructive'
       });
-    },
-  });
-
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    subscribeMutation.mutate(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gray-800 text-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
-            <Link href="/" className="flex items-center mb-6">
-              <div className="h-10 w-10 bg-[#D42E12] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">A</span>
-              </div>
-              <span className="ml-2 font-heading font-bold text-xl text-white">AYITI JODIA</span>
-            </Link>
-            <p className="text-gray-400 mb-6">{t('footer.description')}</p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-[#FFCC00] transition">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#FFCC00] transition">
-                <i className="fab fa-twitter"></i>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#FFCC00] transition">
-                <i className="fab fa-instagram"></i>
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#FFCC00] transition">
-                <i className="fab fa-youtube"></i>
-              </a>
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#0D47A1] text-xl font-bold">AN</div>
+              <div className="ml-2 text-white font-serif font-bold text-2xl">{t('siteName')}</div>
             </div>
+            <p className="text-gray-400 mb-4">{t('footer.description')}</p>
           </div>
           
           <div>
-            <h3 className="font-heading font-semibold text-lg mb-6">{t('footer.categories')}</h3>
-            <ul className="space-y-3">
-              {categories.map((category) => (
-                <li key={category.id}>
-                  <Link href={`/category/${category.slug}`} className="text-gray-400 hover:text-white transition">
-                    {category.nameHt}
+            <h4 className="text-lg font-serif font-bold mb-4">{t('footer.categories')}</h4>
+            <ul className="space-y-2">
+              {CATEGORIES.slice(0, 6).map((category) => (
+                <li key={category.slug}>
+                  <Link href={`/category/${category.slug}`}>
+                    <a className="text-gray-400 hover:text-white transition">
+                      {t(`categories.${category.slug}`)}
+                    </a>
                   </Link>
                 </li>
               ))}
@@ -106,82 +71,87 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-heading font-semibold text-lg mb-6">{t('footer.quickLinks')}</h3>
-            <ul className="space-y-3">
-              <li><Link href="/" className="text-gray-400 hover:text-white transition">{t('nav.home')}</Link></li>
-              <li><Link href="/about" className="text-gray-400 hover:text-white transition">{t('nav.about')}</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-white transition">{t('nav.blog')}</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-white transition">{t('nav.contact')}</Link></li>
-              <li><Link href="/privacy" className="text-gray-400 hover:text-white transition">{t('footer.privacy')}</Link></li>
-              <li><Link href="/terms" className="text-gray-400 hover:text-white transition">{t('footer.terms')}</Link></li>
+            <h4 className="text-lg font-serif font-bold mb-4">{t('footer.quickLinks')}</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.home')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/media">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.media')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.contact')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/about">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.about')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.privacy')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.terms')}</a>
+                </Link>
+              </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-heading font-semibold text-lg mb-6">{t('newsletter.title')}</h3>
-            <p className="text-gray-400 mb-4">{t('newsletter.description')}</p>
-            
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="email"
-                          placeholder={t('newsletter.emailPlaceholder')}
-                          className="w-full px-4 py-3 rounded-md bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFCC00]"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                
-                <Button 
-                  type="submit" 
-                  className="w-full px-4 py-3 bg-[#FFCC00] text-[#00209F] font-semibold rounded-md hover:bg-opacity-90 transition"
-                  disabled={subscribeMutation.isPending}
-                >
-                  {subscribeMutation.isPending ? t('common.loading') : t('newsletter.subscribe')}
-                </Button>
-              </form>
-            </Form>
+            <h4 className="text-lg font-serif font-bold mb-4">{t('footer.subscription')}</h4>
+            <p className="text-gray-400 mb-4">{t('footer.subscriptionDescription')}</p>
+            <form className="flex" onSubmit={handleSubmit}>
+              <Input
+                type="email"
+                placeholder={t('footer.emailPlaceholder')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="px-4 py-2 rounded-l w-full focus:outline-none text-gray-800"
+                required
+              />
+              <Button 
+                type="submit" 
+                className="bg-[#FFC107] hover:bg-[#FFECB3] transition text-[#0D47A1] px-4 py-2 rounded-r font-semibold"
+                disabled={isSubmitting}
+              >
+                {t('footer.subscribe')}
+              </Button>
+            </form>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center mb-4 md:mb-0">
-            <span className="text-sm text-gray-400">© {new Date().getFullYear()} Ayiti Jodia. {t('footer.rights')}</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => changeLang('ht')} 
-              className={`text-gray-400 hover:text-white transition text-sm ${currentLang === 'ht' ? 'text-white' : ''}`}
-            >
-              Kreyòl
-            </button>
-            <span className="text-gray-600">|</span>
-            <button 
-              onClick={() => changeLang('fr')} 
-              className={`text-gray-400 hover:text-white transition text-sm ${currentLang === 'fr' ? 'text-white' : ''}`}
-            >
-              Français
-            </button>
-            <span className="text-gray-600">|</span>
-            <button 
-              onClick={() => changeLang('en')} 
-              className={`text-gray-400 hover:text-white transition text-sm ${currentLang === 'en' ? 'text-white' : ''}`}
-            >
-              English
-            </button>
+        <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-400">© {new Date().getFullYear()} {t('siteName')}. {t('footer.copyright')}</p>
+          <div className="mt-4 md:mt-0">
+            <ul className="flex space-x-4 text-sm">
+              <li>
+                <Link href="/privacy">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.privacy')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.terms')}</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/sitemap">
+                  <a className="text-gray-400 hover:text-white transition">{t('nav.sitemap')}</a>
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
