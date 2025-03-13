@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-# Make the script executable if it's not already
+# Make the script executable
 chmod +x start.sh
 
 # Install dependencies if needed
@@ -13,6 +13,6 @@ fi
 # Set PORT environment variable for Replit compatibility
 export PORT=5000
 
-# Start the application
+# Start the application with improved error handling
 echo "Starting the application..."
-npm run dev
+npm run dev || echo "Failed to start the application. Check logs for errors."
