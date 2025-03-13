@@ -66,5 +66,7 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    log(`Replit URL: ${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
+    log(`Full application URL: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
   });
 })();
