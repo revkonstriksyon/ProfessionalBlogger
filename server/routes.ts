@@ -7,6 +7,15 @@ import {
   insertContactMessageSchema,
   insertPollResponseSchema 
 } from "@shared/schema";
+import 'express-session';
+
+// Extend the Express.Session interface to add our custom properties
+declare module 'express-session' {
+  interface Session {
+    authenticated?: boolean;
+    user?: { id: number; username: string; role: string };
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -280,6 +289,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auth middleware for admin routes
+  const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.session || !req.session.authenticated) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (!req.session.user || req.session.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied" });
+    }
+    next();
+  };
+
   // Admin authentication
   app.post(`${apiRouter}/admin/login`, async (req: Request, res: Response) => {
     try {
@@ -336,17 +356,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+  // Admin media routes
+  app.get(`${apiRouter}/admin/media`, authMiddleware, async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
-      const article = await storage.updateArticle(id, req.body);
-      res.json(article);
+      const type = req.query.type as string | undefined;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const mediaItems = await storage.getMedia(type, limit, offset);
+      res.json(mediaItems);
     } catch (error) {
-      res.status(500).json({ error: "Failed to update article" });
+      res.status(500).json({ error: "Failed to fetch admin media" });
     }
   });
 
-  app.delete(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+  app.post(`${apiRouter}/admin/media`, authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const media = await storage.createMedia(req.body);
+      res.status(201).json(media);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create media" });
+    }
+  });
+  
+  // Admin categories routes
+  app.get(`${apiRouter}/admin/categories`, authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const categories = await storage.getCategories();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch admin categories" });
+    }
+  });
+
+  app.post(`${apiRouter}/admin/categories`, authMiddleware, async (req: Request, res: Response) => {
+    try {
+      const category = await storage.createCategory(req.body);
+      res.status(201).json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create category" });
+    }
+  });
+
+  app.delete(`${apiRouter}/admin/articles/:id`, authMiddleware, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       await storage.deleteArticle(id);
@@ -357,13 +409,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoints
-  app.get(`${apiRouter}/admin/dashboard`, async (req: Request, res: Response) => {
+  app.get(`${apiRouter}/admin/dashboard`, authMiddleware, async (req: Request, res: Response) => {
     try {
-      // Verifye si itilizatè a se yon administratè
-      const user = await storage.getUserById(req.user?.id);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
-      }
 
       const articles = await storage.getArticles();
       const categories = await storage.getCategories();
@@ -379,13 +426,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post(`${apiRouter}/admin/articles`, async (req: Request, res: Response) => {
-    try {
-      const user = await storage.getUserById(req.user?.id);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
-      }
-      
+  app.post(`${apiRouter}/admin/articles`, authMiddleware, async (req: Request, res: Response) => {
+    try {      
       const article = await storage.createArticle(req.body);
       res.status(201).json(article);
     } catch (error) {
@@ -393,13 +435,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+  app.put(`${apiRouter}/admin/articles/:id`, authMiddleware, async (req: Request, res: Response) => {
     try {
-      const user = await storage.getUserById(req.user?.id);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
-      }
-
       const id = parseInt(req.params.id);
       const article = await storage.updateArticle(id, req.body);
       res.json(article);
@@ -408,13 +445,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+  app.delete(`${apiRouter}/admin/articles/:id`, authMiddleware, async (req: Request, res: Response) => {
     try {
-      const user = await storage.getUserById(req.user?.id);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
-      }
-
       const id = parseInt(req.params.id);
       await storage.deleteArticle(id);
       res.status(204).send();
