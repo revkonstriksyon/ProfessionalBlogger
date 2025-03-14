@@ -8,6 +8,7 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserById(id: number): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 
   // Category operations
@@ -22,6 +23,7 @@ export interface IStorage {
   getFeaturedArticles(limit?: number): Promise<Article[]>;
   createArticle(article: InsertArticle): Promise<Article>;
   updateArticle(id: number, article: Partial<InsertArticle>): Promise<Article | undefined>;
+  deleteArticle(id: number): Promise<boolean>;
   getPopularArticles(limit?: number): Promise<Article[]>;
   getRelatedArticles(articleId: number, limit?: number): Promise<Article[]>;
   searchArticles(query: string, limit?: number, offset?: number): Promise<Article[]>;

@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
@@ -280,19 +280,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin endpoints
-  app.post(`${apiRouter}/admin/articles`, async (req: Request, res: Response) => {
+  // Admin authentication
+  app.post(`${apiRouter}/admin/login`, async (req: Request, res: Response) => {
     try {
-      // Verifye si itilizatè a se yon administratè
-      const user = await storage.getUserById(req.user?.id);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ error: "Access denied" });
+      const { username, password } = req.body;
+      
+      // Pou demonstrasyon sèlman, itilize enfòmasyon fiks
+      // Nan yon vèsyon reyèl, fè verifye nan baz done
+      if (username === "admin" && password === "admin123") {
+        // Kreye sesyon
+        if (req.session) {
+          req.session.authenticated = true;
+          req.session.user = { id: 1, username: "admin", role: "admin" };
+        }
+        
+        return res.status(200).json({ success: true, message: "Otantifikasyon reyisi" });
       }
       
-      const article = await storage.createArticle(req.body);
-      res.status(201).json(article);
+      return res.status(401).json({ success: false, message: "Non itilizatè oswa modpas la pa kòrèk" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to create article" });
+      console.error('Error during login:', error);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+  });
+  
+  app.get(`${apiRouter}/admin/check-auth`, async (req: Request, res: Response) => {
+    try {
+      if (req.session && req.session.authenticated) {
+        return res.status(200).json({ authenticated: true, user: req.session.user });
+      }
+      
+      return res.status(401).json({ authenticated: false });
+    } catch (error) {
+      console.error('Error checking auth:', error);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+  });
+  
+  app.post(`${apiRouter}/admin/logout`, async (req: Request, res: Response) => {
+    try {
+      if (req.session) {
+        req.session.destroy((err) => {
+          if (err) {
+            return res.status(500).json({ success: false, message: 'Error logging out' });
+          }
+          
+          return res.status(200).json({ success: true, message: 'Logout successful' });
+        });
+      } else {
+        return res.status(200).json({ success: true, message: 'Logout successful' });
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
     }
   });
 

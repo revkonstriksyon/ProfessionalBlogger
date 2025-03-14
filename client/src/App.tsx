@@ -16,6 +16,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AdminArticles from "@/pages/AdminArticles";
 import AdminArticleForm from "@/pages/AdminArticleForm";
 import AdminCategories from "@/pages/AdminCategories";
+import AdminMedia from "@/pages/AdminMedia";
 import Layout from "@/components/layout/Layout";
 import "./lib/i18n"; // Import i18n configuration
 
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/admin/articles/new" component={AdminArticleForm} />
       <Route path="/admin/articles/edit/:id" component={AdminArticleForm} />
       <Route path="/admin/categories" component={AdminCategories} />
+      <Route path="/admin/media" component={AdminMedia} />
       
       {/* Wout pa jwenn */}
       <Route component={NotFound} />
