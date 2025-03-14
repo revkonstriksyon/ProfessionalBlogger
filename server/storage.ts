@@ -378,6 +378,10 @@ export class MemStorage implements IStorage {
       (user) => user.username === username,
     );
   }
+  
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
 
   async createUser(user: InsertUser): Promise<User> {
     const id = this.currentUserId++;
@@ -450,6 +454,11 @@ export class MemStorage implements IStorage {
     const updatedArticle: Article = { ...existingArticle, ...article };
     this.articles.set(id, updatedArticle);
     return updatedArticle;
+  }
+  
+  async deleteArticle(id: number): Promise<boolean> {
+    if (!this.articles.has(id)) return false;
+    return this.articles.delete(id);
   }
 
   async getPopularArticles(limit = 3): Promise<Article[]> {
