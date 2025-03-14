@@ -280,6 +280,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoints
+  app.post(`${apiRouter}/admin/articles`, async (req: Request, res: Response) => {
+    try {
+      // Verifye si itilizatè a se yon administratè
+      const user = await storage.getUserById(req.user?.id);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      const article = await storage.createArticle(req.body);
+      res.status(201).json(article);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create article" });
+    }
+  });
+
+  app.put(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const article = await storage.updateArticle(id, req.body);
+      res.json(article);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update article" });
+    }
+  });
+
+  app.delete(`${apiRouter}/admin/articles/:id`, async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteArticle(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete article" });
+    }
+  });
+
   // Contact endpoints
   app.post(`${apiRouter}/contact`, async (req: Request, res: Response) => {
     try {
